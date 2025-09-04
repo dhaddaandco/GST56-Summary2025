@@ -12,10 +12,11 @@
         'Intermediaries': 'intermediaries-content',
         'Refunds': 'refunds-content',
         'Rate Rationalisation': null, // No content yet
-        'Goods': null, // No content yet
-        'Services': null, // No content yet
-        'Trade Facilitation': null, // No content yet
-        'Clarifications': null, // No content yet
+        'Registration': 'registration-content',
+        'Supply & Discounts': 'supply-discounts-content',
+        'GSTAT': 'gstat-content',
+        'Anti Profiteering': 'anti-profiteering-content',
+        'Challenges': 'challenges-content',
         'FAQ': null // No content yet
     };
         
