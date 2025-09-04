@@ -304,6 +304,140 @@ body {
     display: block;
 }
 
+/* Sub-tab Navigation Styles */
+.sub-nav-container {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+}
+
+.sub-nav-item {
+    background: none;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 5px 5px 0 0;
+    position: relative;
+}
+
+.sub-nav-item:hover {
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+.sub-nav-item.active {
+    background-color: #1e3a8a;
+    color: white;
+    border-color: #1e3a8a;
+    font-weight: bold;
+}
+
+.sub-nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #1e3a8a;
+}
+
+/* Sub-tab Content Styles */
+.sub-tab-content {
+    display: none;
+}
+
+.sub-tab-content.active {
+    display: block;
+}
+
+/* Rate Table Styles */
+.table-container {
+    margin: 20px 0;
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rate-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    background-color: white;
+    font-size: 0.9rem;
+}
+
+.rate-table thead {
+    background-color: #1e3a8a;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.rate-table th {
+    padding: 12px 8px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 0.85rem;
+    border: none;
+    white-space: nowrap;
+}
+
+.rate-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #e5e7eb;
+    line-height: 1.4;
+    vertical-align: top;
+}
+
+.rate-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.rate-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.rate-table td:nth-child(1) {
+    background-color: #f1f5f9;
+    font-weight: 600;
+    color: #1e3a8a;
+    min-width: 120px;
+}
+
+.rate-table td:nth-child(2) {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #374151;
+    min-width: 100px;
+}
+
+.rate-table td:nth-child(3) {
+    min-width: 200px;
+    max-width: 300px;
+}
+
+.rate-table td:nth-child(4),
+.rate-table td:nth-child(5) {
+    text-align: center;
+    font-weight: 600;
+    min-width: 80px;
+}
+
+.rate-table td:nth-child(6) {
+    min-width: 250px;
+    max-width: 400px;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
 /* Comparative Analysis Table Styles */
 .comparative-table {
     margin: 20px 0;
