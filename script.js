@@ -5,19 +5,19 @@
         const navItems = document.querySelectorAll('.nav-item');
         const tabContents = document.querySelectorAll('.tab-content');
         
-        // Create a mapping of navigation items to content sections
-        const tabMapping = {
-            'Overview': null, // No content yet
-            'Compensation Cess': 'compensation-cess-content',
-            'Intermediaries': 'intermediaries-content',
-            'Effective Date': null, // No content yet
-            'Rate Rationalisation': null, // No content yet
-            'Goods': null, // No content yet
-            'Services': null, // No content yet
-            'Trade Facilitation': null, // No content yet
-            'Clarifications': null, // No content yet
-            'FAQ': null // No content yet
-        };
+            // Create a mapping of navigation items to content sections
+    const tabMapping = {
+        'Overview': null, // No content yet
+        'Compensation Cess': 'compensation-cess-content',
+        'Intermediaries': 'intermediaries-content',
+        'Refunds': 'refunds-content',
+        'Rate Rationalisation': null, // No content yet
+        'Goods': null, // No content yet
+        'Services': null, // No content yet
+        'Trade Facilitation': null, // No content yet
+        'Clarifications': null, // No content yet
+        'FAQ': null // No content yet
+    };
         
         navItems.forEach(item => {
             item.addEventListener('click', function() {
