@@ -33,15 +33,55 @@ body {
     flex: 1;
 }
 
+.logo-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.logo {
+    margin-right: 20px;
+}
+
+.logo-icon {
+    width: 60px;
+    height: 36px;
+}
+
+.company-info {
+    flex: 1;
+}
+
+.company-name {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+    color: white;
+}
+
+.company-subtitle {
+    font-size: 0.9rem;
+    margin: 0;
+    color: white;
+    letter-spacing: 1px;
+    opacity: 0.9;
+}
+
+.meeting-info {
+    margin-top: 10px;
+}
+
 .header-title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: bold;
     margin-bottom: 5px;
+    color: white;
 }
 
 .header-date {
     font-size: 1.1rem;
     opacity: 0.9;
+    color: white;
 }
 
 .header-right {
@@ -180,8 +220,17 @@ body {
         text-align: center;
     }
     
+    .logo-section {
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    
+    .company-name {
+        font-size: 1.8rem;
+    }
+    
     .header-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     
     .search-bar {
@@ -219,8 +268,17 @@ body {
 }
 
 @media (max-width: 480px) {
+    .company-name {
+        font-size: 1.6rem;
+    }
+    
     .header-title {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+    }
+    
+    .logo-icon {
+        width: 50px;
+        height: 30px;
     }
     
     .nav-item {
@@ -260,4 +318,67 @@ body {
 
 .tab-content.active {
     display: block;
+}
+
+/* Comparative Analysis Table Styles */
+.comparative-table {
+    margin: 20px 0;
+    overflow-x: auto;
+}
+
+.analysis-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.analysis-table thead {
+    background-color: #1e3a8a;
+    color: white;
+}
+
+.analysis-table th {
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+}
+
+.analysis-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.analysis-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.analysis-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.analysis-table td:first-child {
+    background-color: #f1f5f9;
+    font-weight: 600;
+    color: #1e3a8a;
+}
+
+/* Responsive table styles */
+@media (max-width: 768px) {
+    .analysis-table th,
+    .analysis-table td {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+    }
+    
+    .analysis-table th {
+        font-size: 0.9rem;
+    }
 }
