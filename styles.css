@@ -236,3 +236,28 @@ body {
         font-size: 1.4rem;
     }
 }
+
+/* Footer Styles */
+.footer {
+    background-color: #87ceeb;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.footer-text {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    margin: 0;
+}
+
+/* Tab Content Styles */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
