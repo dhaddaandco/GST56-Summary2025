@@ -103,19 +103,23 @@
                 const sectionTitles = section.querySelectorAll('.section-title');
                 const sectionSubtitles = section.querySelectorAll('.section-subtitle');
                 
+                // Create a regex for word boundary matching
+                const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const searchRegex = new RegExp(`\\b${escapedTerm}\\b`, 'i');
+                
                 // Check if search term matches title, section titles, or content
-                const titleMatch = sectionTitle.includes(searchTerm);
-                const contentMatch = sectionText.includes(searchTerm);
+                const titleMatch = searchRegex.test(sectionTitle);
+                const contentMatch = searchRegex.test(sectionText);
                 
                 // Check section titles and subtitles
                 let sectionMatch = false;
                 sectionTitles.forEach(title => {
-                    if (title.textContent.toLowerCase().includes(searchTerm)) {
+                    if (searchRegex.test(title.textContent.toLowerCase())) {
                         sectionMatch = true;
                     }
                 });
                 sectionSubtitles.forEach(subtitle => {
-                    if (subtitle.textContent.toLowerCase().includes(searchTerm)) {
+                    if (searchRegex.test(subtitle.textContent.toLowerCase())) {
                         sectionMatch = true;
                     }
                 });
@@ -169,7 +173,9 @@
                 const parent = textNode.parentNode;
                 if (parent.tagName !== 'SCRIPT' && parent.tagName !== 'STYLE' && parent.tagName !== 'MARK') {
                     const text = textNode.textContent;
-                    const regex = new RegExp(`(${searchTerm})`, 'gi');
+                    // Escape special regex characters and create a proper word boundary regex
+                    const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const regex = new RegExp(`\\b(${escapedTerm})\\b`, 'gi');
                     const highlightedText = text.replace(regex, '<mark class="search-highlight">$1</mark>');
                     
                     if (highlightedText !== text) {
