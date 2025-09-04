@@ -17,8 +17,7 @@
         'GSTAT': 'gstat-content',
         'Anti Profiteering': 'anti-profiteering-content',
         'Challenges': 'challenges-content',
-        'Time of Supply': 'time-of-supply-content',
-        'FAQ': null // No content yet
+        'Time of Supply': 'time-of-supply-content'
     };
         
         navItems.forEach(item => {
