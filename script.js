@@ -80,24 +80,156 @@
         const searchBar = document.querySelector('.search-bar');
         
         searchBar.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
+            const searchTerm = this.value.toLowerCase().trim();
             
-            // Here you could implement search functionality
-            // to filter content based on the search term
-            console.log('Searching for:', searchTerm);
+            if (searchTerm === '') {
+                // If search is empty, show the currently active tab
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab) {
+                    activeTab.style.display = 'block';
+                }
+                clearSearchHighlights();
+                hideSearchMessage();
+                return;
+            }
+            
+            // Search through all content sections
+            const contentSections = document.querySelectorAll('.tab-content');
+            let foundResults = false;
+            
+            contentSections.forEach(section => {
+                const sectionText = section.textContent.toLowerCase();
+                const sectionTitle = section.querySelector('.content-title')?.textContent.toLowerCase() || '';
+                const sectionTitles = section.querySelectorAll('.section-title');
+                const sectionSubtitles = section.querySelectorAll('.section-subtitle');
+                
+                // Check if search term matches title, section titles, or content
+                const titleMatch = sectionTitle.includes(searchTerm);
+                const contentMatch = sectionText.includes(searchTerm);
+                
+                // Check section titles and subtitles
+                let sectionMatch = false;
+                sectionTitles.forEach(title => {
+                    if (title.textContent.toLowerCase().includes(searchTerm)) {
+                        sectionMatch = true;
+                    }
+                });
+                sectionSubtitles.forEach(subtitle => {
+                    if (subtitle.textContent.toLowerCase().includes(searchTerm)) {
+                        sectionMatch = true;
+                    }
+                });
+                
+                if (titleMatch || contentMatch || sectionMatch) {
+                    section.style.display = 'block';
+                    section.classList.add('search-result');
+                    foundResults = true;
+                    
+                    // Highlight matching text
+                    highlightSearchTerm(section, searchTerm);
+                } else {
+                    section.style.display = 'none';
+                    section.classList.remove('search-result');
+                }
+            });
+            
+            // Show message if no results found
+            showSearchResults(foundResults, searchTerm);
         });
         
         searchBar.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const searchTerm = this.value;
                 
-                // Here you could implement search functionality
-                // when user presses Enter
-                console.log('Search submitted:', searchTerm);
+                // Trigger search on Enter key
+                this.dispatchEvent(new Event('input'));
                 
                 // Prevent form submission if this was in a form
                 e.preventDefault();
             }
+        });
+        
+        // Function to highlight search terms
+        function highlightSearchTerm(element, searchTerm) {
+            const walker = document.createTreeWalker(
+                element,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            
+            const textNodes = [];
+            let node;
+            
+            while (node = walker.nextNode()) {
+                textNodes.push(node);
+            }
+            
+            textNodes.forEach(textNode => {
+                const parent = textNode.parentNode;
+                if (parent.tagName !== 'SCRIPT' && parent.tagName !== 'STYLE' && parent.tagName !== 'MARK') {
+                    const text = textNode.textContent;
+                    const regex = new RegExp(`(${searchTerm})`, 'gi');
+                    const highlightedText = text.replace(regex, '<mark class="search-highlight">$1</mark>');
+                    
+                    if (highlightedText !== text) {
+                        const wrapper = document.createElement('span');
+                        wrapper.innerHTML = highlightedText;
+                        parent.replaceChild(wrapper, textNode);
+                    }
+                }
+            });
+        }
+        
+        // Function to show search results message
+        function showSearchResults(foundResults, searchTerm) {
+            let messageElement = document.getElementById('search-message');
+            
+            if (!foundResults && searchTerm !== '') {
+                if (!messageElement) {
+                    messageElement = document.createElement('div');
+                    messageElement.id = 'search-message';
+                    messageElement.className = 'search-message';
+                    document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
+                }
+                messageElement.innerHTML = `<p>No results found for "<strong>${searchTerm}</strong>". Try a different search term.</p>`;
+                messageElement.style.display = 'block';
+            } else if (messageElement) {
+                messageElement.style.display = 'none';
+            }
+        }
+        
+        // Function to clear search highlights
+        function clearSearchHighlights() {
+            const highlights = document.querySelectorAll('.search-highlight');
+            highlights.forEach(highlight => {
+                const parent = highlight.parentNode;
+                parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+                parent.normalize();
+            });
+        }
+        
+        // Function to hide search message
+        function hideSearchMessage() {
+            const messageElement = document.getElementById('search-message');
+            if (messageElement) {
+                messageElement.style.display = 'none';
+            }
+        }
+        
+        // Clear search when clicking on navigation
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                searchBar.value = '';
+                clearSearchHighlights();
+                hideSearchMessage();
+                
+                // Remove search result class from all sections
+                const searchResults = document.querySelectorAll('.search-result');
+                searchResults.forEach(section => {
+                    section.classList.remove('search-result');
+                });
+            });
         });
         
         // Smooth scrolling for any internal links
