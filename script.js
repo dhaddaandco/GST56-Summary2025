@@ -1,12 +1,12 @@
-// Navigation functionality
+// GST Website Interactive Functionality
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Navigation functionality
     const navItems = document.querySelectorAll('.nav-item');
-    const searchInput = document.querySelector('.search-input');
     
-    // Navigation item click handling
     navItems.forEach(item => {
         item.addEventListener('click', function() {
-            // Remove active class from all nav items
+            // Remove active class from all items
             navItems.forEach(nav => nav.classList.remove('active'));
             
             // Add active class to clicked item
@@ -14,34 +14,35 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Here you could add functionality to show different content
             // based on the selected navigation item
-            console.log('Selected navigation:', this.textContent);
+            console.log('Selected tab:', this.textContent);
         });
     });
     
     // Search functionality
-    searchInput.addEventListener('input', function() {
+    const searchBar = document.querySelector('.search-bar');
+    
+    searchBar.addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
-        console.log('Searching for:', searchTerm);
         
-        // Here you could implement actual search functionality
-        // For now, we'll just log the search term
-        if (searchTerm.length > 2) {
-            // Simulate search results
-            console.log('Search results for:', searchTerm);
+        // Here you could implement search functionality
+        // to filter content based on the search term
+        console.log('Searching for:', searchTerm);
+    });
+    
+    searchBar.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const searchTerm = this.value;
+            
+            // Here you could implement search functionality
+            // when user presses Enter
+            console.log('Search submitted:', searchTerm);
+            
+            // Prevent form submission if this was in a form
+            e.preventDefault();
         }
     });
     
-    // Search input focus/blur effects
-    searchInput.addEventListener('focus', function() {
-        this.parentElement.style.transform = 'scale(1.02)';
-        this.parentElement.style.transition = 'transform 0.2s ease';
-    });
-    
-    searchInput.addEventListener('blur', function() {
-        this.parentElement.style.transform = 'scale(1)';
-    });
-    
-    // Smooth scrolling for any anchor links (if added later)
+    // Smooth scrolling for any internal links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -55,40 +56,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add some interactive hover effects to the content card
-    const contentCard = document.querySelector('.content-card');
-    if (contentCard) {
-        contentCard.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-            this.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
-            this.style.boxShadow = '0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
-        });
-        
-        contentCard.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
-        });
-    }
+    // Add hover effects for better user experience
+    const contentSections = document.querySelectorAll('.content-section');
     
-    // Add keyboard navigation support
-    document.addEventListener('keydown', function(e) {
-        // Allow Enter key to trigger search
-        if (e.key === 'Enter' && document.activeElement === searchInput) {
-            const searchTerm = searchInput.value;
-            if (searchTerm.trim()) {
-                console.log('Search executed for:', searchTerm);
-                // Here you could implement actual search functionality
-            }
-        }
+    contentSections.forEach(section => {
+        section.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.transition = 'transform 0.3s ease';
+        });
         
-        // Allow Escape key to clear search
-        if (e.key === 'Escape' && document.activeElement === searchInput) {
-            searchInput.value = '';
-            searchInput.blur();
-        }
+        section.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
     });
     
-    // Add loading animation for better UX
+    // Add loading animation (optional)
     window.addEventListener('load', function() {
         document.body.style.opacity = '0';
         document.body.style.transition = 'opacity 0.5s ease';
@@ -97,4 +79,54 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.style.opacity = '1';
         }, 100);
     });
+    
+    // Print functionality (optional)
+    const printButton = document.createElement('button');
+    printButton.textContent = 'Print Page';
+    printButton.className = 'print-button';
+    printButton.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        z-index: 1000;
+    `;
+    
+    printButton.addEventListener('click', function() {
+        window.print();
+    });
+    
+    document.body.appendChild(printButton);
+    
+    // Add print styles
+    const printStyles = document.createElement('style');
+    printStyles.textContent = `
+        @media print {
+            .print-button {
+                display: none !important;
+            }
+            .header {
+                background-color: #1e3a8a !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .navigation {
+                background: linear-gradient(135deg, #3b82f6, #1e40af) !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .content-container {
+                box-shadow: none !important;
+                border: 1px solid #ddd;
+            }
+        }
+    `;
+    document.head.appendChild(printStyles);
 });
