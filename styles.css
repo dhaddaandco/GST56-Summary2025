@@ -70,11 +70,13 @@ body {
 }
 
 .nav-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 10px;
     display: flex;
     gap: 0;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .nav-item {
@@ -110,16 +112,16 @@ body {
 
 /* Main Content Styles */
 .main-content {
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 0 20px;
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 0 10px;
 }
 
 .content-container {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    padding: 40px;
+    padding: 20px;
 }
 
 .content-title {
@@ -409,32 +411,32 @@ body {
     background-color: #f1f5f9;
     font-weight: 600;
     color: #1e3a8a;
-    min-width: 120px;
+    min-width: 80px;
 }
 
 .rate-table td:nth-child(2) {
     font-family: 'Courier New', monospace;
     font-weight: 600;
     color: #374151;
-    min-width: 100px;
+    min-width: 70px;
 }
 
 .rate-table td:nth-child(3) {
-    min-width: 200px;
-    max-width: 300px;
+    min-width: 150px;
+    max-width: 250px;
 }
 
 .rate-table td:nth-child(4),
 .rate-table td:nth-child(5) {
     text-align: center;
     font-weight: 600;
-    min-width: 80px;
+    min-width: 60px;
 }
 
 .rate-table td:nth-child(6) {
-    min-width: 250px;
-    max-width: 400px;
-    font-size: 0.85rem;
+    min-width: 180px;
+    max-width: 300px;
+    font-size: 0.8rem;
     color: #6b7280;
 }
 
@@ -498,5 +500,75 @@ body {
     
     .analysis-table th {
         font-size: 0.9rem;
+    }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .header {
+        padding: 15px 5px;
+    }
+    
+    .header-title {
+        font-size: 1.3rem;
+    }
+    
+    .header-date {
+        font-size: 0.8rem;
+    }
+    
+    .nav-item {
+        padding: 6px 8px;
+        font-size: 0.7rem;
+    }
+    
+    .main-content {
+        margin: 10px auto;
+        padding: 0 5px;
+    }
+    
+    .content-container {
+        padding: 15px;
+    }
+    
+    .content-title {
+        font-size: 1.3rem;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+    }
+    
+    .rate-table {
+        font-size: 0.75rem;
+    }
+    
+    .rate-table th,
+    .rate-table td {
+        padding: 6px 4px;
+    }
+    
+    .rate-table td:nth-child(1) {
+        min-width: 60px;
+    }
+    
+    .rate-table td:nth-child(2) {
+        min-width: 50px;
+    }
+    
+    .rate-table td:nth-child(3) {
+        min-width: 100px;
+        max-width: 150px;
+    }
+    
+    .rate-table td:nth-child(4),
+    .rate-table td:nth-child(5) {
+        min-width: 40px;
+    }
+    
+    .rate-table td:nth-child(6) {
+        min-width: 120px;
+        max-width: 200px;
+        font-size: 0.7rem;
     }
 }
