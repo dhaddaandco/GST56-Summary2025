@@ -3,6 +3,21 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Navigation functionality
     const navItems = document.querySelectorAll('.nav-item');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    // Create a mapping of navigation items to content sections
+    const tabMapping = {
+        'Overview': null, // No content yet
+        'Compensation Cess': 'compensation-cess-content',
+        'Intermediaries': 'intermediaries-content',
+        'Effective Date': null, // No content yet
+        'Rate Rationalisation': null, // No content yet
+        'Goods': null, // No content yet
+        'Services': null, // No content yet
+        'Trade Facilitation': null, // No content yet
+        'Clarifications': null, // No content yet
+        'FAQ': null // No content yet
+    };
     
     navItems.forEach(item => {
         item.addEventListener('click', function() {
@@ -12,9 +27,23 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add active class to clicked item
             this.classList.add('active');
             
-            // Here you could add functionality to show different content
-            // based on the selected navigation item
-            console.log('Selected tab:', this.textContent);
+            // Hide all tab contents
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show the corresponding content
+            const tabName = this.textContent.trim();
+            const contentId = tabMapping[tabName];
+            
+            if (contentId) {
+                const targetContent = document.getElementById(contentId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            }
+            
+            console.log('Selected tab:', tabName);
         });
     });
     
