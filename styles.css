@@ -332,30 +332,10 @@ body {
     display: flex;
     gap: 5px;
     margin-bottom: 30px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    flex-wrap: wrap;
     border-bottom: 2px solid #e5e7eb;
     padding-bottom: 10px;
-    scrollbar-width: thin;
-    scrollbar-color: #3b82f6 #e5e7eb;
-}
-
-.sub-nav-container::-webkit-scrollbar {
-    height: 6px;
-}
-
-.sub-nav-container::-webkit-scrollbar-track {
-    background: #e5e7eb;
-    border-radius: 3px;
-}
-
-.sub-nav-container::-webkit-scrollbar-thumb {
-    background: #3b82f6;
-    border-radius: 3px;
-}
-
-.sub-nav-container::-webkit-scrollbar-thumb:hover {
-    background: #1e40af;
+    justify-content: center;
 }
 
 .sub-nav-item {
