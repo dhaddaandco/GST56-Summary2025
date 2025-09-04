@@ -11,7 +11,7 @@
         'Compensation Cess': 'compensation-cess-content',
         'Intermediaries': 'intermediaries-content',
         'Refunds': 'refunds-content',
-        'Rate Rationalisation': null, // No content yet
+        'Rate Rationalisation': 'rate-rationalisation-content',
         'Registration': 'registration-content',
         'Supply & Discounts': 'supply-discounts-content',
         'GSTAT': 'gstat-content',
@@ -46,10 +46,38 @@
                 }
                 
                 console.log('Selected tab:', tabName);
+                    });
+    });
+    
+    // Sub-tab functionality for Rate Rationalisation
+    const subNavItems = document.querySelectorAll('.sub-nav-item');
+    const subTabContents = document.querySelectorAll('.sub-tab-content');
+    
+    subNavItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove active class from all sub-nav items
+            subNavItems.forEach(subNav => subNav.classList.remove('active'));
+            
+            // Add active class to clicked sub-nav item
+            this.classList.add('active');
+            
+            // Hide all sub-tab contents
+            subTabContents.forEach(content => {
+                content.classList.remove('active');
             });
+            
+            // Show the corresponding sub-tab content
+            const subTabId = this.getAttribute('data-subtab');
+            const targetContent = document.getElementById(subTabId);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+            
+            console.log('Selected sub-tab:', this.textContent);
         });
-        
-        // Search functionality
+    });
+    
+    // Search functionality
         const searchBar = document.querySelector('.search-bar');
         
         searchBar.addEventListener('input', function() {
