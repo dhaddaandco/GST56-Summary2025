@@ -23,6 +23,19 @@
         
         navItems.forEach(item => {
             item.addEventListener('click', function() {
+                // Clear search when navigating
+                searchBar.value = '';
+                isSearchActive = false;
+                currentSearchTerm = '';
+                clearSearchHighlights();
+                hideSearchMessage();
+                
+                // Remove search result class from all sections
+                const searchResults = document.querySelectorAll('.search-result');
+                searchResults.forEach(section => {
+                    section.classList.remove('search-result');
+                });
+                
                 // Remove active class from all items
                 navItems.forEach(nav => nav.classList.remove('active'));
                 
@@ -32,6 +45,7 @@
                 // Hide all tab contents
                 tabContents.forEach(content => {
                     content.classList.remove('active');
+                    content.style.display = 'none';
                 });
                 
                 // Show the corresponding content
@@ -42,12 +56,13 @@
                     const targetContent = document.getElementById(contentId);
                     if (targetContent) {
                         targetContent.classList.add('active');
+                        targetContent.style.display = 'block';
                     }
                 }
                 
                 console.log('Selected tab:', tabName);
-                    });
-    });
+            });
+        });
     
     // Sub-tab functionality for Rate Rationalisation
     const subNavItems = document.querySelectorAll('.sub-nav-item');
@@ -79,6 +94,8 @@
     
     // Search functionality
         const searchBar = document.querySelector('.search-bar');
+        let isSearchActive = false;
+        let currentSearchTerm = '';
         
         // Add search suggestions
         const searchSuggestions = [
@@ -148,26 +165,25 @@
             }
         });
         
-        searchBar.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase().trim();
+        // Function to perform search
+        function performSearch(searchTerm) {
+            currentSearchTerm = searchTerm.toLowerCase().trim();
             
-            // Show suggestions
-            showSuggestions(this.value);
-            
-            if (searchTerm === '') {
-                // If search is empty, show the currently active tab
-                const activeTab = document.querySelector('.tab-content.active');
-                if (activeTab) {
-                    activeTab.style.display = 'block';
-                }
+            if (currentSearchTerm === '') {
+                // If search is empty, restore normal tab functionality
+                isSearchActive = false;
                 clearSearchHighlights();
                 hideSearchMessage();
+                restoreNormalTabDisplay();
                 return;
             }
+            
+            isSearchActive = true;
             
             // Search through all content sections
             const contentSections = document.querySelectorAll('.tab-content');
             let foundResults = false;
+            let firstResult = null;
             
             contentSections.forEach(section => {
                 const sectionText = section.textContent.toLowerCase();
@@ -176,7 +192,7 @@
                 const sectionSubtitles = section.querySelectorAll('.section-subtitle');
                 
                 // Create a regex for word boundary matching
-                const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const escapedTerm = currentSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 const searchRegex = new RegExp(`\\b${escapedTerm}\\b`, 'i');
                 
                 // Check if search term matches title, section titles, or content
@@ -201,8 +217,13 @@
                     section.classList.add('search-result');
                     foundResults = true;
                     
+                    // Store first result for scrolling
+                    if (!firstResult) {
+                        firstResult = section;
+                    }
+                    
                     // Highlight matching text
-                    highlightSearchTerm(section, searchTerm);
+                    highlightSearchTerm(section, currentSearchTerm);
                 } else {
                     section.style.display = 'none';
                     section.classList.remove('search-result');
@@ -210,7 +231,40 @@
             });
             
             // Show message if no results found
-            showSearchResults(foundResults, searchTerm);
+            showSearchResults(foundResults, currentSearchTerm);
+            
+            // Scroll to first result
+            if (firstResult) {
+                setTimeout(() => {
+                    firstResult.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            }
+        }
+        
+        // Function to restore normal tab display
+        function restoreNormalTabDisplay() {
+            const contentSections = document.querySelectorAll('.tab-content');
+            contentSections.forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('search-result');
+            });
+            
+            // Show the currently active tab
+            const activeTab = document.querySelector('.tab-content.active');
+            if (activeTab) {
+                activeTab.style.display = 'block';
+            }
+        }
+        
+        searchBar.addEventListener('input', function() {
+            // Show suggestions
+            showSuggestions(this.value);
+            
+            // Perform search
+            performSearch(this.value);
         });
         
         searchBar.addEventListener('keypress', function(e) {
@@ -218,7 +272,10 @@
                 const searchTerm = this.value;
                 
                 // Trigger search on Enter key
-                this.dispatchEvent(new Event('input'));
+                performSearch(searchTerm);
+                
+                // Hide suggestions
+                suggestionsDropdown.style.display = 'none';
                 
                 // Prevent form submission if this was in a form
                 e.preventDefault();
@@ -293,7 +350,10 @@
                     document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
                 }
                 const resultCount = document.querySelectorAll('.search-result').length;
-                messageElement.innerHTML = `<p>Found <strong>${resultCount}</strong> result(s) for "<strong>${searchTerm}</strong>".</p>`;
+                messageElement.innerHTML = `
+                    <p>Found <strong>${resultCount}</strong> result(s) for "<strong>${searchTerm}</strong>".</p>
+                    <p style="font-size: 0.9rem; margin-top: 8px; opacity: 0.8;">Click on any tab to clear search and return to normal navigation.</p>
+                `;
                 messageElement.style.display = 'block';
             } else if (messageElement) {
                 messageElement.style.display = 'none';
@@ -318,20 +378,6 @@
             }
         }
         
-        // Clear search when clicking on navigation
-        navItems.forEach(item => {
-            item.addEventListener('click', function() {
-                searchBar.value = '';
-                clearSearchHighlights();
-                hideSearchMessage();
-                
-                // Remove search result class from all sections
-                const searchResults = document.querySelectorAll('.search-result');
-                searchResults.forEach(section => {
-                    section.classList.remove('search-result');
-                });
-            });
-        });
         
         // Smooth scrolling for any internal links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
