@@ -79,8 +79,79 @@
     // Search functionality
         const searchBar = document.querySelector('.search-bar');
         
+        // Add search suggestions
+        const searchSuggestions = [
+            'Food', 'Agriculture', 'Textile', 'Health', 'Pharmaceuticals',
+            'Motor Vehicles', 'Energy', 'Construction', 'Transportation',
+            'GST rates', 'HSN codes', 'Refunds', 'Registration', 'GSTAT',
+            'Compensation Cess', 'Intermediaries', 'Anti Profiteering',
+            '5%', '12%', '18%', '28%', 'Nil', 'Exempt',
+            'Milk', 'Bread', 'Medicines', 'Textiles', 'Machinery'
+        ];
+        
+        // Create suggestions dropdown
+        const suggestionsDropdown = document.createElement('div');
+        suggestionsDropdown.className = 'search-suggestions';
+        suggestionsDropdown.style.cssText = `
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        `;
+        
+        // Position search bar relatively for dropdown
+        searchBar.parentElement.style.position = 'relative';
+        searchBar.parentElement.appendChild(suggestionsDropdown);
+        
+        // Show suggestions
+        function showSuggestions(query) {
+            if (query.length < 2) {
+                suggestionsDropdown.style.display = 'none';
+                return;
+            }
+            
+            const filtered = searchSuggestions.filter(suggestion => 
+                suggestion.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (filtered.length === 0) {
+                suggestionsDropdown.style.display = 'none';
+                return;
+            }
+            
+            suggestionsDropdown.innerHTML = filtered.map(suggestion => 
+                `<div class="suggestion-item" style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;" 
+                     onmouseover="this.style.backgroundColor='#f5f5f5'" 
+                     onmouseout="this.style.backgroundColor='white'"
+                     onclick="document.querySelector('.search-bar').value='${suggestion}'; document.querySelector('.search-bar').dispatchEvent(new Event('input')); suggestionsDropdown.style.display='none'">
+                     ${suggestion}
+                 </div>`
+            ).join('');
+            
+            suggestionsDropdown.style.display = 'block';
+        }
+        
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchBar.parentElement.contains(e.target)) {
+                suggestionsDropdown.style.display = 'none';
+            }
+        });
+        
         searchBar.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase().trim();
+            
+            // Show suggestions
+            showSuggestions(this.value);
             
             if (searchTerm === '') {
                 // If search is empty, show the currently active tab
@@ -198,7 +269,30 @@
                     messageElement.className = 'search-message';
                     document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
                 }
-                messageElement.innerHTML = `<p>No results found for "<strong>${searchTerm}</strong>". Try a different search term.</p>`;
+                messageElement.innerHTML = `
+                    <p>No results found for "<strong>${searchTerm}</strong>".</p>
+                    <p>Try searching for:</p>
+                    <ul style="text-align: left; margin: 10px 0;">
+                        <li>Industry names (e.g., "Food", "Textile", "Health")</li>
+                        <li>HSN codes (e.g., "0401", "5205")</li>
+                        <li>GST rates (e.g., "5%", "12%", "18%")</li>
+                        <li>Product types (e.g., "milk", "bread", "medicines")</li>
+                        <li>Keywords (e.g., "refund", "registration", "compensation")</li>
+                    </ul>
+                `;
+                messageElement.style.display = 'block';
+            } else if (foundResults && searchTerm !== '') {
+                if (!messageElement) {
+                    messageElement = document.createElement('div');
+                    messageElement.id = 'search-message';
+                    messageElement.className = 'search-message';
+                    messageElement.style.backgroundColor = '#f0f9ff';
+                    messageElement.style.borderColor = '#3b82f6';
+                    messageElement.style.color = '#1e40af';
+                    document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
+                }
+                const resultCount = document.querySelectorAll('.search-result').length;
+                messageElement.innerHTML = `<p>Found <strong>${resultCount}</strong> result(s) for "<strong>${searchTerm}</strong>".</p>`;
                 messageElement.style.display = 'block';
             } else if (messageElement) {
                 messageElement.style.display = 'none';
@@ -308,19 +402,151 @@
                 .print-button {
                     display: none !important;
                 }
+                
+                /* Page setup */
+                @page {
+                    margin: 0.5in;
+                    size: A4;
+                }
+                
+                body {
+                    font-size: 12pt;
+                    line-height: 1.4;
+                    color: #000;
+                    background: white !important;
+                }
+                
+                /* Header styling */
                 .header {
                     background-color: #1e3a8a !important;
                     -webkit-print-color-adjust: exact;
                     color-adjust: exact;
+                    color: white !important;
+                    page-break-inside: avoid;
                 }
+                
+                .header-title {
+                    color: white !important;
+                    font-size: 18pt;
+                }
+                
+                .header-date {
+                    color: white !important;
+                    font-size: 10pt;
+                }
+                
+                /* Navigation styling */
                 .navigation {
-                    background: linear-gradient(135deg, #3b82f6, #1e40af) !important;
+                    background: #3b82f6 !important;
                     -webkit-print-color-adjust: exact;
                     color-adjust: exact;
+                    page-break-inside: avoid;
                 }
+                
+                .nav-item {
+                    color: white !important;
+                    background: transparent !important;
+                }
+                
+                .nav-item.active {
+                    background: rgba(255, 255, 255, 0.2) !important;
+                }
+                
+                /* Content styling */
                 .content-container {
                     box-shadow: none !important;
                     border: 1px solid #ddd;
+                    page-break-inside: avoid;
+                }
+                
+                .content-title {
+                    color: #1e3a8a !important;
+                    font-size: 16pt;
+                    page-break-after: avoid;
+                }
+                
+                .section-title {
+                    color: #1e3a8a !important;
+                    font-size: 14pt;
+                    page-break-after: avoid;
+                }
+                
+                .section-subtitle {
+                    color: #1e3a8a !important;
+                    font-size: 12pt;
+                    page-break-after: avoid;
+                }
+                
+                /* Table styling */
+                .rate-table {
+                    border-collapse: collapse;
+                    width: 100%;
+                    font-size: 10pt;
+                    page-break-inside: auto;
+                }
+                
+                .rate-table thead {
+                    background-color: #1e3a8a !important;
+                    -webkit-print-color-adjust: exact;
+                    color-adjust: exact;
+                    color: white !important;
+                }
+                
+                .rate-table th,
+                .rate-table td {
+                    border: 1px solid #000;
+                    padding: 4pt;
+                    text-align: left;
+                }
+                
+                .rate-table tbody tr:nth-child(even) {
+                    background-color: #f9f9f9 !important;
+                    -webkit-print-color-adjust: exact;
+                    color-adjust: exact;
+                }
+                
+                /* Hide elements not needed in print */
+                .sub-nav-container {
+                    display: none !important;
+                }
+                
+                /* Show only active content */
+                .tab-content:not(.active),
+                .sub-tab-content:not(.active) {
+                    display: none !important;
+                }
+                
+                /* Lists and other elements */
+                .impact-list li {
+                    page-break-inside: avoid;
+                }
+                
+                .highlight-card {
+                    page-break-inside: avoid;
+                    border: 1px solid #ddd;
+                    background: #f9f9f9 !important;
+                    -webkit-print-color-adjust: exact;
+                    color-adjust: exact;
+                }
+                
+                .industry-category {
+                    page-break-inside: avoid;
+                    border: 1px solid #ddd;
+                    margin-bottom: 10pt;
+                }
+                
+                /* Timeline styling */
+                .timeline-item {
+                    page-break-inside: avoid;
+                    border: 1px solid #ddd;
+                    margin-bottom: 10pt;
+                }
+                
+                .timeline-date {
+                    background: #3b82f6 !important;
+                    -webkit-print-color-adjust: exact;
+                    color-adjust: exact;
+                    color: white !important;
                 }
             }
         `;
