@@ -111,7 +111,21 @@ document.addEventListener('DOMContentLoaded', function() {
             'GST rates', 'HSN codes', 'Refunds', 'Registration', 'GSTAT',
             'Compensation Cess', 'Intermediaries', 'Anti Profiteering',
             '5%', '12%', '18%', '28%', 'Nil', 'Exempt',
-            'Milk', 'Bread', 'Medicines', 'Textiles', 'Machinery'
+            'Milk', 'Bread', 'Medicines', 'Textiles', 'Machinery',
+            'Meat', 'Dairy', 'Beverages', 'Snacks', 'Preserved',
+            'Dry Fruits', 'Carbohydrates', 'Fats', 'Sugar', 'Cocoa',
+            'Pasta', 'Corn Flakes', 'Bakery', 'Coffee', 'Tea', 'Soups',
+            'Spectacles', 'Medical Equipment', 'Diagnostic Kits', 'Surgical Gloves',
+            'Blood Glucose', 'Thermometers', 'X-ray', 'Contact Lenses',
+            'Cigarettes', 'Tobacco', 'Pan Masala', 'Beedi', 'Luxury Cars',
+            'Aerated Drinks', 'Carbonated Beverages', 'Coal', 'Lignite',
+            'Solar', 'Renewable Energy', 'Biodiesel', 'Nuclear', 'Plastic',
+            'Paper', 'Wood', 'Bamboo', 'Cork', 'Rubber', 'Leather',
+            'Defence', 'Aircraft', 'Missiles', 'Drones', 'Military',
+            'Cement', 'Sand', 'Bricks', 'Construction Materials',
+            'Transport', 'Logistics', 'Job Work', 'Hospitality', 'Wellness',
+            'Insurance', 'Life Insurance', 'Health Insurance', 'Cinema',
+            'Toys', 'Handicrafts', 'Jewellery', 'Kitchenware', 'Furniture'
         ];
         
         // Create suggestions dropdown
@@ -188,15 +202,16 @@ document.addEventListener('DOMContentLoaded', function() {
             
             isSearchActive = true;
             
-            // Search through all content sections
-            const contentSections = document.querySelectorAll('.tab-content');
+            // Search through all content sections (main tabs and sub-tabs)
+            const contentSections = document.querySelectorAll('.tab-content, .sub-tab-content');
             let foundResults = false;
             let firstResult = null;
             let resultTabs = [];
+            let foundSubTabs = [];
             
             contentSections.forEach(section => {
                 const sectionText = section.textContent.toLowerCase();
-                const sectionTitle = section.querySelector('.content-title')?.textContent.toLowerCase() || '';
+                const sectionTitle = section.querySelector('.content-title, .section-title')?.textContent.toLowerCase() || '';
                 const sectionTitles = section.querySelectorAll('.section-title');
                 const sectionSubtitles = section.querySelectorAll('.section-subtitle');
                 
@@ -234,6 +249,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Track which tabs have results
                     resultTabs.push(section.id);
                     
+                    // If this is a sub-tab, also track the parent tab
+                    if (section.classList.contains('sub-tab-content')) {
+                        foundSubTabs.push(section.id);
+                    }
+                    
                     // Highlight matching text
                     highlightSearchTerm(section, currentSearchTerm);
                 } else {
@@ -249,47 +269,96 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show message if no results found
             showSearchResults(foundResults, currentSearchTerm, resultTabs);
             
-            console.log('Search results:', { foundResults, resultTabs, firstResult: firstResult?.id });
+            console.log('Search results:', { foundResults, resultTabs, firstResult: firstResult?.id, foundSubTabs });
             
-            // Scroll to first result
+            // Scroll to first result and handle sub-tab navigation
             if (firstResult) {
-                // First, make sure the first result tab is active
-                const contentSections = document.querySelectorAll('.tab-content');
-                contentSections.forEach(section => {
-                    section.style.display = 'none';
-                    section.classList.remove('active');
-                });
-                
-                firstResult.style.display = 'block';
-                firstResult.classList.add('active');
-                
-                // Update navigation to show the correct active tab
-                const navItems = document.querySelectorAll('.nav-item');
-                navItems.forEach(nav => nav.classList.remove('active'));
-                
-                // Find the corresponding nav item for the first result
-                const tabNames = {
-                    'overview-content': 'Overview',
-                    'compensation-cess-content': 'Compensation Cess',
-                    'intermediaries-content': 'Intermediaries',
-                    'refunds-content': 'Refunds',
-                    'rate-rationalisation-content': 'Rate Rationalisation',
-                    'registration-content': 'Registration',
-                    'supply-discounts-content': 'Supply & Discounts',
-                    'gstat-content': 'GSTAT',
-                    'anti-profiteering-content': 'Anti Profiteering',
-                    'challenges-content': 'Challenges',
-                    'time-of-supply-content': 'Time of Supply',
-                    'faqs-content': 'FAQs'
-                };
-                
-                const tabName = tabNames[firstResult.id];
-                if (tabName) {
-                    const correspondingNav = Array.from(navItems).find(nav => 
-                        nav.textContent.trim() === tabName
-                    );
-                    if (correspondingNav) {
-                        correspondingNav.classList.add('active');
+                // Handle sub-tab navigation
+                if (firstResult.classList.contains('sub-tab-content')) {
+                    // This is a sub-tab, we need to activate the parent tab first
+                    const parentTab = document.getElementById('rate-rationalisation-content');
+                    if (parentTab) {
+                        // Hide all main tabs
+                        const mainTabs = document.querySelectorAll('.tab-content');
+                        mainTabs.forEach(tab => {
+                            tab.style.display = 'none';
+                            tab.classList.remove('active');
+                        });
+                        
+                        // Show the parent tab
+                        parentTab.style.display = 'block';
+                        parentTab.classList.add('active');
+                        
+                        // Update main navigation
+                        const navItems = document.querySelectorAll('.nav-item');
+                        navItems.forEach(nav => nav.classList.remove('active'));
+                        const rateRationalisationNav = Array.from(navItems).find(nav => 
+                            nav.textContent.trim() === 'Rate Rationalisation'
+                        );
+                        if (rateRationalisationNav) {
+                            rateRationalisationNav.classList.add('active');
+                        }
+                        
+                        // Hide all sub-tabs
+                        const subTabs = document.querySelectorAll('.sub-tab-content');
+                        subTabs.forEach(subTab => {
+                            subTab.style.display = 'none';
+                            subTab.classList.remove('active');
+                        });
+                        
+                        // Show the found sub-tab
+                        firstResult.style.display = 'block';
+                        firstResult.classList.add('active');
+                        
+                        // Update sub-tab navigation
+                        const subNavItems = document.querySelectorAll('.sub-nav-item');
+                        subNavItems.forEach(subNav => subNav.classList.remove('active'));
+                        const correspondingSubNav = Array.from(subNavItems).find(subNav => 
+                            subNav.getAttribute('data-subtab') === firstResult.id
+                        );
+                        if (correspondingSubNav) {
+                            correspondingSubNav.classList.add('active');
+                        }
+                    }
+                } else {
+                    // This is a main tab
+                    const contentSections = document.querySelectorAll('.tab-content');
+                    contentSections.forEach(section => {
+                        section.style.display = 'none';
+                        section.classList.remove('active');
+                    });
+                    
+                    firstResult.style.display = 'block';
+                    firstResult.classList.add('active');
+                    
+                    // Update navigation to show the correct active tab
+                    const navItems = document.querySelectorAll('.nav-item');
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    
+                    // Find the corresponding nav item for the first result
+                    const tabNames = {
+                        'overview-content': 'Overview',
+                        'compensation-cess-content': 'Compensation Cess',
+                        'intermediaries-content': 'Intermediaries',
+                        'refunds-content': 'Refunds',
+                        'rate-rationalisation-content': 'Rate Rationalisation',
+                        'registration-content': 'Registration',
+                        'supply-discounts-content': 'Supply & Discounts',
+                        'gstat-content': 'GSTAT',
+                        'anti-profiteering-content': 'Anti Profiteering',
+                        'challenges-content': 'Challenges',
+                        'time-of-supply-content': 'Time of Supply',
+                        'faqs-content': 'FAQs'
+                    };
+                    
+                    const tabName = tabNames[firstResult.id];
+                    if (tabName) {
+                        const correspondingNav = Array.from(navItems).find(nav => 
+                            nav.textContent.trim() === tabName
+                        );
+                        if (correspondingNav) {
+                            correspondingNav.classList.add('active');
+                        }
                     }
                 }
                 
@@ -305,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Function to restore normal tab display
         function restoreNormalTabDisplay() {
-            const contentSections = document.querySelectorAll('.tab-content');
+            const contentSections = document.querySelectorAll('.tab-content, .sub-tab-content');
             contentSections.forEach(section => {
                 section.style.display = 'none';
                 section.classList.remove('search-result');
@@ -315,6 +384,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const activeTab = document.querySelector('.tab-content.active');
             if (activeTab) {
                 activeTab.style.display = 'block';
+            }
+            
+            // Show the currently active sub-tab if we're in Rate Rationalisation
+            const activeSubTab = document.querySelector('.sub-tab-content.active');
+            if (activeSubTab) {
+                activeSubTab.style.display = 'block';
             }
         }
         
@@ -335,6 +410,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Clear any pending search timeout
                 clearTimeout(this.searchTimeout);
+                
+                // If we're already in search mode and have multiple results, cycle through them
+                if (isSearchActive && searchResultTabs.length > 1) {
+                    e.preventDefault();
+                    currentResultIndex = (currentResultIndex + 1) % searchResultTabs.length;
+                    navigateToSearchResult(searchResultTabs[currentResultIndex]);
+                    return;
+                }
                 
                 // Trigger search on Enter key
                 performSearch(searchTerm);
@@ -416,12 +499,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     messageElement = document.createElement('div');
                     messageElement.id = 'search-message';
                     messageElement.className = 'search-message';
+                    messageElement.style.backgroundColor = '#fef3c7';
+                    messageElement.style.borderColor = '#f59e0b';
+                    messageElement.style.color = '#92400e';
+                    messageElement.style.border = '2px solid #f59e0b';
+                    messageElement.style.borderRadius = '8px';
+                    messageElement.style.padding = '16px';
+                    messageElement.style.margin = '16px 0';
+                    messageElement.style.boxShadow = '0 2px 4px rgba(245, 158, 11, 0.1)';
                     document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
                 }
                 messageElement.innerHTML = `
-                    <p>No results found for "<strong>${searchTerm}</strong>".</p>
-                    <p>Try searching for:</p>
-                    <ul style="text-align: left; margin: 10px 0;">
+                    <p>No results found for "<strong style="color: #92400e;">${searchTerm}</strong>".</p>
+                    <p style="margin-top: 12px; font-weight: 500;">Try searching for:</p>
+                    <ul style="text-align: left; margin: 10px 0; padding-left: 20px;">
                         <li>Industry names (e.g., "Food", "Textile", "Health")</li>
                         <li>HSN codes (e.g., "0401", "5205")</li>
                         <li>GST rates (e.g., "5%", "12%", "18%")</li>
@@ -435,9 +526,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     messageElement = document.createElement('div');
                     messageElement.id = 'search-message';
                     messageElement.className = 'search-message';
-                    messageElement.style.backgroundColor = '#f0f9ff';
-                    messageElement.style.borderColor = '#3b82f6';
-                    messageElement.style.color = '#1e40af';
+                    messageElement.style.backgroundColor = '#f0fdf4';
+                    messageElement.style.borderColor = '#22c55e';
+                    messageElement.style.color = '#166534';
+                    messageElement.style.border = '2px solid #22c55e';
+                    messageElement.style.borderRadius = '8px';
+                    messageElement.style.padding = '16px';
+                    messageElement.style.margin = '16px 0';
+                    messageElement.style.boxShadow = '0 2px 4px rgba(34, 197, 94, 0.1)';
                     document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
                 }
                 
@@ -468,9 +564,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 ${resultTabs.map(tabId => {
                                     const tabName = tabNames[tabId] || tabId.replace('-content', '');
                                     return `<button onclick="navigateToSearchResult('${tabId}')" 
-                                            style="background: #3b82f6; color: white; border: none; padding: 6px 12px; 
-                                                   border-radius: 4px; cursor: pointer; font-size: 0.8rem; 
-                                                   transition: background 0.2s;">
+                                            style="background: #22c55e; color: white; border: none; padding: 8px 16px; 
+                                                   border-radius: 6px; cursor: pointer; font-size: 0.85rem; 
+                                                   transition: all 0.2s; margin: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                                                   font-weight: 500;"
+                                            onmouseover="this.style.background='#16a34a'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'"
+                                            onmouseout="this.style.background='#22c55e'; this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)'">
                                             ${tabName}
                                         </button>`;
                                 }).join('')}
@@ -480,9 +579,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 messageElement.innerHTML = `
-                    <p>Found <strong>${resultCount}</strong> result(s) for "<strong>${searchTerm}</strong>".</p>
+                    <p>Found <strong style="color: #059669;">${resultCount}</strong> result(s) for "<strong style="color: #1e40af;">${searchTerm}</strong>".</p>
                     ${tabButtons}
-                    <p style="font-size: 0.9rem; margin-top: 8px; opacity: 0.8;">Click on any tab to clear search and return to normal navigation.</p>
+                    <p style="font-size: 0.9rem; margin-top: 8px; color: #6b7280;">Click on any tab to clear search and return to normal navigation. Press <kbd style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 0.8rem;">Enter</kbd> to cycle through results.</p>
                 `;
                 messageElement.style.display = 'block';
             } else if (messageElement) {
@@ -498,16 +597,65 @@ document.addEventListener('DOMContentLoaded', function() {
             // Clear current highlights first
             clearSearchHighlights();
             
-            // Hide all tabs
-            const contentSections = document.querySelectorAll('.tab-content');
-            contentSections.forEach(section => {
-                section.style.display = 'none';
-                section.classList.remove('active');
-            });
-            
-            // Show the selected tab
+            // Get the target tab
             const targetTab = document.getElementById(tabId);
-            if (targetTab) {
+            if (!targetTab) return;
+            
+            // Handle sub-tab navigation
+            if (targetTab.classList.contains('sub-tab-content')) {
+                // This is a sub-tab, we need to activate the parent tab first
+                const parentTab = document.getElementById('rate-rationalisation-content');
+                if (parentTab) {
+                    // Hide all main tabs
+                    const mainTabs = document.querySelectorAll('.tab-content');
+                    mainTabs.forEach(tab => {
+                        tab.style.display = 'none';
+                        tab.classList.remove('active');
+                    });
+                    
+                    // Show the parent tab
+                    parentTab.style.display = 'block';
+                    parentTab.classList.add('active');
+                    
+                    // Update main navigation
+                    const navItems = document.querySelectorAll('.nav-item');
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    const rateRationalisationNav = Array.from(navItems).find(nav => 
+                        nav.textContent.trim() === 'Rate Rationalisation'
+                    );
+                    if (rateRationalisationNav) {
+                        rateRationalisationNav.classList.add('active');
+                    }
+                    
+                    // Hide all sub-tabs
+                    const subTabs = document.querySelectorAll('.sub-tab-content');
+                    subTabs.forEach(subTab => {
+                        subTab.style.display = 'none';
+                        subTab.classList.remove('active');
+                    });
+                    
+                    // Show the target sub-tab
+                    targetTab.style.display = 'block';
+                    targetTab.classList.add('active');
+                    
+                    // Update sub-tab navigation
+                    const subNavItems = document.querySelectorAll('.sub-nav-item');
+                    subNavItems.forEach(subNav => subNav.classList.remove('active'));
+                    const correspondingSubNav = Array.from(subNavItems).find(subNav => 
+                        subNav.getAttribute('data-subtab') === tabId
+                    );
+                    if (correspondingSubNav) {
+                        correspondingSubNav.classList.add('active');
+                    }
+                }
+            } else {
+                // This is a main tab
+                const contentSections = document.querySelectorAll('.tab-content');
+                contentSections.forEach(section => {
+                    section.style.display = 'none';
+                    section.classList.remove('active');
+                });
+                
                 targetTab.style.display = 'block';
                 targetTab.classList.add('active');
                 
@@ -540,18 +688,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         correspondingNav.classList.add('active');
                     }
                 }
-                
-                // Re-highlight search terms in the new tab
-                if (currentSearchTerm) {
-                    highlightSearchTerm(targetTab, currentSearchTerm);
-                }
-                
-                // Scroll to top of the tab
-                targetTab.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
             }
+            
+            // Re-highlight search terms in the new tab
+            if (currentSearchTerm) {
+                highlightSearchTerm(targetTab, currentSearchTerm);
+            }
+            
+            // Scroll to top of the tab
+            targetTab.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
         }
         
         // Make navigateToSearchResult globally available
