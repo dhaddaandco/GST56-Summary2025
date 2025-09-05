@@ -202,8 +202,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             isSearchActive = true;
             
-            // Search through all content sections (main tabs and sub-tabs)
+            // Hide all content sections during search
             const contentSections = document.querySelectorAll('.tab-content, .sub-tab-content');
+            contentSections.forEach(section => {
+                section.style.display = 'none';
+            });
+            
             let foundResults = false;
             let firstResult = null;
             let resultTabs = [];
@@ -237,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 if (titleMatch || contentMatch || sectionMatch) {
-                    section.style.display = 'block';
+                    // Don't show sections automatically - just mark them as search results
                     section.classList.add('search-result');
                     foundResults = true;
                     
@@ -257,7 +261,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Highlight matching text
                     highlightSearchTerm(section, currentSearchTerm);
                 } else {
-                    section.style.display = 'none';
                     section.classList.remove('search-result');
                 }
             });
