@@ -45,6 +45,21 @@ body {
     width: auto;
     object-fit: contain;
     max-width: 120px;
+    display: block;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 4px;
+}
+
+.logo-fallback {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 4px;
+    padding: 10px;
+    min-width: 120px;
 }
 
 .header-text {
