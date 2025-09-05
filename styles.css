@@ -42,16 +42,37 @@ body {
 
 .logo-image {
     height: 80px;
-    width: auto;
-    object-fit: contain;
+    width: 100%;
+    object-fit: cover;
     max-width: 200px;
     display: block;
     border: 2px solid rgba(255,255,255,0.3);
     border-radius: 8px;
     background-color: rgba(255,255,255,0.1);
-    padding: 8px;
+    padding: 0;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
+}
+
+/* Mobile responsive logo */
+@media (max-width: 768px) {
+    .logo-image {
+        height: 60px;
+        max-width: 120px;
+        padding: 0;
+        object-fit: cover;
+        border-radius: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-image {
+        height: 50px;
+        max-width: 100px;
+        padding: 0;
+        object-fit: cover;
+        border-radius: 4px;
+    }
 }
 
 .logo-image:hover {
