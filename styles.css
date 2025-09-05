@@ -573,6 +573,30 @@ body {
     .step-number {
         align-self: center;
     }
+    
+    /* Sub-navigation responsive styles */
+    .sub-nav-container {
+        flex-wrap: wrap;
+        gap: 3px;
+        justify-content: flex-start;
+    }
+    
+    .sub-nav-item {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        min-width: auto;
+        flex: 1 1 auto;
+    }
+    
+    /* Table responsive improvements */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .rate-table {
+        min-width: 600px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -938,5 +962,34 @@ body {
         min-width: 120px;
         max-width: 200px;
         font-size: 0.7rem;
+    }
+    
+    /* Additional mobile improvements */
+    .sub-nav-container {
+        padding: 0 5px;
+    }
+    
+    .sub-nav-item {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+        margin-bottom: 3px;
+    }
+    
+    .content-container {
+        padding: 15px 10px;
+        margin: 10px 5px;
+    }
+    
+    .header-content {
+        padding: 0 10px;
+    }
+    
+    .nav-container {
+        padding: 0 5px;
+    }
+    
+    .nav-item {
+        padding: 8px 10px;
+        font-size: 0.8rem;
     }
 }
