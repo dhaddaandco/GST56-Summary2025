@@ -38,6 +38,9 @@ body {
 
 .logo-section {
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .logo-image {
@@ -58,20 +61,32 @@ body {
 @media (max-width: 768px) {
     .logo-image {
         height: 60px;
-        max-width: 120px;
+        width: 100%;
+        min-width: 120px;
         padding: 0;
         object-fit: cover;
         border-radius: 6px;
+    }
+    
+    .logo-section {
+        width: 120px;
+        height: 60px;
     }
 }
 
 @media (max-width: 480px) {
     .logo-image {
         height: 50px;
-        max-width: 100px;
+        width: 100%;
+        min-width: 100px;
         padding: 0;
         object-fit: cover;
         border-radius: 4px;
+    }
+    
+    .logo-section {
+        width: 100px;
+        height: 50px;
     }
 }
 
