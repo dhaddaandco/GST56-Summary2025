@@ -7,7 +7,7 @@
         
             // Create a mapping of navigation items to content sections
     const tabMapping = {
-        'Overview': null, // No content yet
+        'Overview': 'overview-content',
         'Compensation Cess': 'compensation-cess-content',
         'Intermediaries': 'intermediaries-content',
         'Refunds': 'refunds-content',
