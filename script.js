@@ -184,6 +184,7 @@
             const contentSections = document.querySelectorAll('.tab-content');
             let foundResults = false;
             let firstResult = null;
+            let resultTabs = [];
             
             contentSections.forEach(section => {
                 const sectionText = section.textContent.toLowerCase();
@@ -222,6 +223,9 @@
                         firstResult = section;
                     }
                     
+                    // Track which tabs have results
+                    resultTabs.push(section.id);
+                    
                     // Highlight matching text
                     highlightSearchTerm(section, currentSearchTerm);
                 } else {
@@ -230,8 +234,12 @@
                 }
             });
             
+            // Store result tabs for keyboard navigation
+            searchResultTabs = resultTabs;
+            currentResultIndex = 0;
+            
             // Show message if no results found
-            showSearchResults(foundResults, currentSearchTerm);
+            showSearchResults(foundResults, currentSearchTerm, resultTabs);
             
             // Scroll to first result
             if (firstResult) {
@@ -282,6 +290,24 @@
             }
         });
         
+        // Add keyboard navigation for search results
+        let currentResultIndex = 0;
+        let searchResultTabs = [];
+        
+        searchBar.addEventListener('keydown', function(e) {
+            if (isSearchActive && searchResultTabs.length > 1) {
+                if (e.key === 'ArrowRight' || e.key === 'Tab') {
+                    e.preventDefault();
+                    currentResultIndex = (currentResultIndex + 1) % searchResultTabs.length;
+                    navigateToSearchResult(searchResultTabs[currentResultIndex]);
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    currentResultIndex = currentResultIndex === 0 ? searchResultTabs.length - 1 : currentResultIndex - 1;
+                    navigateToSearchResult(searchResultTabs[currentResultIndex]);
+                }
+            }
+        });
+        
         // Function to highlight search terms
         function highlightSearchTerm(element, searchTerm) {
             const walker = document.createTreeWalker(
@@ -317,7 +343,7 @@
         }
         
         // Function to show search results message
-        function showSearchResults(foundResults, searchTerm) {
+        function showSearchResults(foundResults, searchTerm, resultTabs = []) {
             let messageElement = document.getElementById('search-message');
             
             if (!foundResults && searchTerm !== '') {
@@ -349,9 +375,48 @@
                     messageElement.style.color = '#1e40af';
                     document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
                 }
+                
                 const resultCount = document.querySelectorAll('.search-result').length;
+                let tabButtons = '';
+                
+                if (resultTabs.length > 1) {
+                    // Create tab names mapping
+                    const tabNames = {
+                        'overview-content': 'Overview',
+                        'compensation-cess-content': 'Compensation Cess',
+                        'intermediaries-content': 'Intermediaries',
+                        'refunds-content': 'Refunds',
+                        'rate-rationalisation-content': 'Rate Rationalisation',
+                        'registration-content': 'Registration',
+                        'supply-discounts-content': 'Supply & Discounts',
+                        'gstat-content': 'GSTAT',
+                        'anti-profiteering-content': 'Anti Profiteering',
+                        'challenges-content': 'Challenges',
+                        'time-of-supply-content': 'Time of Supply',
+                        'faqs-content': 'FAQs'
+                    };
+                    
+                    tabButtons = `
+                        <div style="margin-top: 15px;">
+                            <p style="font-size: 0.9rem; margin-bottom: 10px; font-weight: bold;">Results found in:</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                ${resultTabs.map(tabId => {
+                                    const tabName = tabNames[tabId] || tabId.replace('-content', '');
+                                    return `<button onclick="navigateToSearchResult('${tabId}')" 
+                                            style="background: #3b82f6; color: white; border: none; padding: 6px 12px; 
+                                                   border-radius: 4px; cursor: pointer; font-size: 0.8rem; 
+                                                   transition: background 0.2s;">
+                                            ${tabName}
+                                        </button>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                
                 messageElement.innerHTML = `
                     <p>Found <strong>${resultCount}</strong> result(s) for "<strong>${searchTerm}</strong>".</p>
+                    ${tabButtons}
                     <p style="font-size: 0.9rem; margin-top: 8px; opacity: 0.8;">Click on any tab to clear search and return to normal navigation.</p>
                 `;
                 messageElement.style.display = 'block';
@@ -359,6 +424,73 @@
                 messageElement.style.display = 'none';
             }
         }
+        
+        // Function to navigate to a specific search result tab
+        function navigateToSearchResult(tabId) {
+            // Update current result index
+            currentResultIndex = searchResultTabs.indexOf(tabId);
+            
+            // Clear current highlights first
+            clearSearchHighlights();
+            
+            // Hide all tabs
+            const contentSections = document.querySelectorAll('.tab-content');
+            contentSections.forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active');
+            });
+            
+            // Show the selected tab
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.style.display = 'block';
+                targetTab.classList.add('active');
+                
+                // Update navigation to show the correct active tab
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(nav => nav.classList.remove('active'));
+                
+                // Find the corresponding nav item
+                const tabNames = {
+                    'overview-content': 'Overview',
+                    'compensation-cess-content': 'Compensation Cess',
+                    'intermediaries-content': 'Intermediaries',
+                    'refunds-content': 'Refunds',
+                    'rate-rationalisation-content': 'Rate Rationalisation',
+                    'registration-content': 'Registration',
+                    'supply-discounts-content': 'Supply & Discounts',
+                    'gstat-content': 'GSTAT',
+                    'anti-profiteering-content': 'Anti Profiteering',
+                    'challenges-content': 'Challenges',
+                    'time-of-supply-content': 'Time of Supply',
+                    'faqs-content': 'FAQs'
+                };
+                
+                const tabName = tabNames[tabId];
+                if (tabName) {
+                    const correspondingNav = Array.from(navItems).find(nav => 
+                        nav.textContent.trim() === tabName
+                    );
+                    if (correspondingNav) {
+                        correspondingNav.classList.add('active');
+                    }
+                }
+                
+                // Re-highlight search terms in the new tab
+                if (currentSearchTerm) {
+                    highlightSearchTerm(targetTab, currentSearchTerm);
+                }
+                
+                // Scroll to top of the tab
+                targetTab.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        }
+        
+        // Make navigateToSearchResult globally available
+        window.navigateToSearchResult = navigateToSearchResult;
         
         // Function to clear search highlights
         function clearSearchHighlights() {
