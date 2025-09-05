@@ -17,25 +17,25 @@
         'GSTAT': 'gstat-content',
         'Anti Profiteering': 'anti-profiteering-content',
         'Challenges': 'challenges-content',
-        'Time of Supply': 'time-of-supply-content',
-        'FAQs': 'faqs-content'
+            'Time of Supply': 'time-of-supply-content',
+            'FAQs': 'faqs-content'
     };
         
         navItems.forEach(item => {
             item.addEventListener('click', function() {
-                // Clear search when navigating
-                searchBar.value = '';
-                isSearchActive = false;
-                currentSearchTerm = '';
-                clearSearchHighlights();
-                hideSearchMessage();
-                
-                // Remove search result class from all sections
-                const searchResults = document.querySelectorAll('.search-result');
-                searchResults.forEach(section => {
-                    section.classList.remove('search-result');
-                });
-                
+                    // Clear search when navigating
+                    searchBar.value = '';
+                    isSearchActive = false;
+                    currentSearchTerm = '';
+                    clearSearchHighlights();
+                    hideSearchMessage();
+                    
+                    // Remove search result class from all sections
+                    const searchResults = document.querySelectorAll('.search-result');
+                    searchResults.forEach(section => {
+                        section.classList.remove('search-result');
+                    });
+                    
                 // Remove active class from all items
                 navItems.forEach(nav => nav.classList.remove('active'));
                 
@@ -45,7 +45,7 @@
                 // Hide all tab contents
                 tabContents.forEach(content => {
                     content.classList.remove('active');
-                    content.style.display = 'none';
+                        content.style.display = 'none';
                 });
                 
                 // Show the corresponding content
@@ -56,13 +56,13 @@
                     const targetContent = document.getElementById(contentId);
                     if (targetContent) {
                         targetContent.classList.add('active');
-                        targetContent.style.display = 'block';
-                    }
+                            targetContent.style.display = 'block';
+                        }
                 }
                 
                 console.log('Selected tab:', tabName);
-            });
-        });
+                    });
+    });
     
     // Sub-tab functionality for Rate Rationalisation
     const subNavItems = document.querySelectorAll('.sub-nav-item');
@@ -94,79 +94,80 @@
     
     // Search functionality
         const searchBar = document.querySelector('.search-bar');
-        let isSearchActive = false;
-        let currentSearchTerm = '';
-        
-        // Add search suggestions
-        const searchSuggestions = [
-            'Food', 'Agriculture', 'Textile', 'Health', 'Pharmaceuticals',
-            'Motor Vehicles', 'Energy', 'Construction', 'Transportation',
-            'GST rates', 'HSN codes', 'Refunds', 'Registration', 'GSTAT',
-            'Compensation Cess', 'Intermediaries', 'Anti Profiteering',
-            '5%', '12%', '18%', '28%', 'Nil', 'Exempt',
-            'Milk', 'Bread', 'Medicines', 'Textiles', 'Machinery'
-        ];
-        
-        // Create suggestions dropdown
-        const suggestionsDropdown = document.createElement('div');
-        suggestionsDropdown.className = 'search-suggestions';
-        suggestionsDropdown.style.cssText = `
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-top: none;
-            border-radius: 0 0 5px 5px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        `;
-        
-        // Position search bar relatively for dropdown
-        searchBar.parentElement.style.position = 'relative';
-        searchBar.parentElement.appendChild(suggestionsDropdown);
-        
-        // Show suggestions
-        function showSuggestions(query) {
-            if (query.length < 2) {
-                suggestionsDropdown.style.display = 'none';
-                return;
+            let isSearchActive = false;
+            let currentSearchTerm = '';
+            
+            // Add search suggestions
+            const searchSuggestions = [
+                'Food', 'Agriculture', 'Textile', 'Health', 'Pharmaceuticals',
+                'Motor Vehicles', 'Energy', 'Construction', 'Transportation',
+                'GST rates', 'HSN codes', 'Refunds', 'Registration', 'GSTAT',
+                'Compensation Cess', 'Intermediaries', 'Anti Profiteering',
+                '5%', '12%', '18%', '28%', 'Nil', 'Exempt',
+                'Milk', 'Bread', 'Medicines', 'Textiles', 'Machinery'
+            ];
+            
+            // Create suggestions dropdown
+            const suggestionsDropdown = document.createElement('div');
+            suggestionsDropdown.className = 'search-suggestions';
+            suggestionsDropdown.style.cssText = `
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border: 1px solid #ddd;
+                border-top: none;
+                border-radius: 0 0 5px 5px;
+                max-height: 200px;
+                overflow-y: auto;
+                z-index: 1000;
+                display: none;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            `;
+            
+            // Position search bar relatively for dropdown
+            searchBar.parentElement.style.position = 'relative';
+            searchBar.parentElement.appendChild(suggestionsDropdown);
+            
+            // Show suggestions
+            function showSuggestions(query) {
+                if (query.length < 2) {
+                    suggestionsDropdown.style.display = 'none';
+                    return;
+                }
+                
+                const filtered = searchSuggestions.filter(suggestion => 
+                    suggestion.toLowerCase().includes(query.toLowerCase())
+                );
+                
+                if (filtered.length === 0) {
+                    suggestionsDropdown.style.display = 'none';
+                    return;
+                }
+                
+                suggestionsDropdown.innerHTML = filtered.map(suggestion => 
+                    `<div class="suggestion-item" style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;" 
+                        onmouseover="this.style.backgroundColor='#f5f5f5'" 
+                        onmouseout="this.style.backgroundColor='white'"
+                        onclick="document.querySelector('.search-bar').value='${suggestion}'; document.querySelector('.search-bar').dispatchEvent(new Event('input')); suggestionsDropdown.style.display='none'">
+                        ${suggestion}
+                    </div>`
+                ).join('');
+                
+                suggestionsDropdown.style.display = 'block';
             }
             
-            const filtered = searchSuggestions.filter(suggestion => 
-                suggestion.toLowerCase().includes(query.toLowerCase())
-            );
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchBar.parentElement.contains(e.target)) {
+                    suggestionsDropdown.style.display = 'none';
+                }
+            });
             
-            if (filtered.length === 0) {
-                suggestionsDropdown.style.display = 'none';
-                return;
-            }
-            
-            suggestionsDropdown.innerHTML = filtered.map(suggestion => 
-                `<div class="suggestion-item" style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;" 
-                     onmouseover="this.style.backgroundColor='#f5f5f5'" 
-                     onmouseout="this.style.backgroundColor='white'"
-                     onclick="document.querySelector('.search-bar').value='${suggestion}'; document.querySelector('.search-bar').dispatchEvent(new Event('input')); suggestionsDropdown.style.display='none'">
-                     ${suggestion}
-                 </div>`
-            ).join('');
-            
-            suggestionsDropdown.style.display = 'block';
-        }
-        
-        // Hide suggestions when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!searchBar.parentElement.contains(e.target)) {
-                suggestionsDropdown.style.display = 'none';
-            }
-        });
-        
         // Function to perform search
         function performSearch(searchTerm) {
+            console.log('Performing search for:', searchTerm);
             currentSearchTerm = searchTerm.toLowerCase().trim();
             
             if (currentSearchTerm === '') {
@@ -193,7 +194,7 @@
                 const sectionSubtitles = section.querySelectorAll('.section-subtitle');
                 
                 // Create a regex for word boundary matching
-                const escapedTerm = currentSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const escapedTerm = currentSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 const searchRegex = new RegExp(`\\b${escapedTerm}\\b`, 'i');
                 
                 // Check if search term matches title, section titles, or content
@@ -217,67 +218,115 @@
                     section.style.display = 'block';
                     section.classList.add('search-result');
                     foundResults = true;
-                    
-                    // Store first result for scrolling
-                    if (!firstResult) {
-                        firstResult = section;
-                    }
-                    
-                    // Track which tabs have results
-                    resultTabs.push(section.id);
+                        
+                        // Store first result for scrolling
+                        if (!firstResult) {
+                            firstResult = section;
+                        }
+                        
+                        // Track which tabs have results
+                        resultTabs.push(section.id);
                     
                     // Highlight matching text
-                    highlightSearchTerm(section, currentSearchTerm);
+                        highlightSearchTerm(section, currentSearchTerm);
                 } else {
                     section.style.display = 'none';
                     section.classList.remove('search-result');
                 }
             });
-            
-            // Store result tabs for keyboard navigation
-            searchResultTabs = resultTabs;
-            currentResultIndex = 0;
+                
+                // Store result tabs for keyboard navigation
+                searchResultTabs = resultTabs;
+                currentResultIndex = 0;
             
             // Show message if no results found
             showSearchResults(foundResults, currentSearchTerm, resultTabs);
             
+            console.log('Search results:', { foundResults, resultTabs, firstResult: firstResult?.id });
+            
             // Scroll to first result
             if (firstResult) {
+                // First, make sure the first result tab is active
+                const contentSections = document.querySelectorAll('.tab-content');
+                contentSections.forEach(section => {
+                    section.style.display = 'none';
+                    section.classList.remove('active');
+                });
+                
+                firstResult.style.display = 'block';
+                firstResult.classList.add('active');
+                
+                // Update navigation to show the correct active tab
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(nav => nav.classList.remove('active'));
+                
+                // Find the corresponding nav item for the first result
+                const tabNames = {
+                    'overview-content': 'Overview',
+                    'compensation-cess-content': 'Compensation Cess',
+                    'intermediaries-content': 'Intermediaries',
+                    'refunds-content': 'Refunds',
+                    'rate-rationalisation-content': 'Rate Rationalisation',
+                    'registration-content': 'Registration',
+                    'supply-discounts-content': 'Supply & Discounts',
+                    'gstat-content': 'GSTAT',
+                    'anti-profiteering-content': 'Anti Profiteering',
+                    'challenges-content': 'Challenges',
+                    'time-of-supply-content': 'Time of Supply',
+                    'faqs-content': 'FAQs'
+                };
+                
+                const tabName = tabNames[firstResult.id];
+                if (tabName) {
+                    const correspondingNav = Array.from(navItems).find(nav => 
+                        nav.textContent.trim() === tabName
+                    );
+                    if (correspondingNav) {
+                        correspondingNav.classList.add('active');
+                    }
+                }
+                
+                // Scroll to the first result
                 setTimeout(() => {
                     firstResult.scrollIntoView({ 
                         behavior: 'smooth', 
                         block: 'start' 
                     });
-                }, 100);
+                }, 200);
             }
-        }
-        
-        // Function to restore normal tab display
-        function restoreNormalTabDisplay() {
-            const contentSections = document.querySelectorAll('.tab-content');
-            contentSections.forEach(section => {
-                section.style.display = 'none';
-                section.classList.remove('search-result');
-            });
             
-            // Show the currently active tab
-            const activeTab = document.querySelector('.tab-content.active');
-            if (activeTab) {
-                activeTab.style.display = 'block';
+            // Function to restore normal tab display
+            function restoreNormalTabDisplay() {
+                const contentSections = document.querySelectorAll('.tab-content');
+                contentSections.forEach(section => {
+                    section.style.display = 'none';
+                    section.classList.remove('search-result');
+                });
+                
+                // Show the currently active tab
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab) {
+                    activeTab.style.display = 'block';
+                }
             }
-        }
-        
+            
         searchBar.addEventListener('input', function() {
             // Show suggestions
             showSuggestions(this.value);
             
-            // Perform search
-            performSearch(this.value);
+            // Perform search with debouncing
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                performSearch(this.value);
+            }, 300);
         });
         
         searchBar.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const searchTerm = this.value;
+                
+                // Clear any pending search timeout
+                clearTimeout(this.searchTimeout);
                 
                 // Trigger search on Enter key
                 performSearch(searchTerm);
@@ -331,7 +380,7 @@
                     // Escape special regex characters and create a proper word boundary regex
                     const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                     const regex = new RegExp(`\\b(${escapedTerm})\\b`, 'gi');
-                    const highlightedText = text.replace(regex, '<mark class="search-highlight">$1</mark>');
+                    const highlightedText = text.replace(regex, '<mark class="search-highlight" id="search-match">$1</mark>');
                     
                     if (highlightedText !== text) {
                         const wrapper = document.createElement('span');
@@ -340,6 +389,17 @@
                     }
                 }
             });
+            
+            // Scroll to the first highlighted term
+            const firstHighlight = element.querySelector('.search-highlight');
+            if (firstHighlight) {
+                setTimeout(() => {
+                    firstHighlight.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                }, 300);
+            }
         }
         
         // Function to show search results message
@@ -353,34 +413,104 @@
                     messageElement.className = 'search-message';
                     document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
                 }
-                messageElement.innerHTML = `
-                    <p>No results found for "<strong>${searchTerm}</strong>".</p>
-                    <p>Try searching for:</p>
-                    <ul style="text-align: left; margin: 10px 0;">
-                        <li>Industry names (e.g., "Food", "Textile", "Health")</li>
-                        <li>HSN codes (e.g., "0401", "5205")</li>
-                        <li>GST rates (e.g., "5%", "12%", "18%")</li>
-                        <li>Product types (e.g., "milk", "bread", "medicines")</li>
-                        <li>Keywords (e.g., "refund", "registration", "compensation")</li>
-                    </ul>
-                `;
+                    messageElement.innerHTML = `
+                        <p>No results found for "<strong>${searchTerm}</strong>".</p>
+                        <p>Try searching for:</p>
+                        <ul style="text-align: left; margin: 10px 0;">
+                            <li>Industry names (e.g., "Food", "Textile", "Health")</li>
+                            <li>HSN codes (e.g., "0401", "5205")</li>
+                            <li>GST rates (e.g., "5%", "12%", "18%")</li>
+                            <li>Product types (e.g., "milk", "bread", "medicines")</li>
+                            <li>Keywords (e.g., "refund", "registration", "compensation")</li>
+                        </ul>
+                    `;
+                    messageElement.style.display = 'block';
+                } else if (foundResults && searchTerm !== '') {
+                    if (!messageElement) {
+                        messageElement = document.createElement('div');
+                        messageElement.id = 'search-message';
+                        messageElement.className = 'search-message';
+                        messageElement.style.backgroundColor = '#f0f9ff';
+                        messageElement.style.borderColor = '#3b82f6';
+                        messageElement.style.color = '#1e40af';
+                        document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
+                    }
+                    
+                    const resultCount = document.querySelectorAll('.search-result').length;
+                    let tabButtons = '';
+                    
+                    if (resultTabs.length > 1) {
+                        // Create tab names mapping
+                        const tabNames = {
+                            'overview-content': 'Overview',
+                            'compensation-cess-content': 'Compensation Cess',
+                            'intermediaries-content': 'Intermediaries',
+                            'refunds-content': 'Refunds',
+                            'rate-rationalisation-content': 'Rate Rationalisation',
+                            'registration-content': 'Registration',
+                            'supply-discounts-content': 'Supply & Discounts',
+                            'gstat-content': 'GSTAT',
+                            'anti-profiteering-content': 'Anti Profiteering',
+                            'challenges-content': 'Challenges',
+                            'time-of-supply-content': 'Time of Supply',
+                            'faqs-content': 'FAQs'
+                        };
+                        
+                        tabButtons = `
+                            <div style="margin-top: 15px;">
+                                <p style="font-size: 0.9rem; margin-bottom: 10px; font-weight: bold;">Results found in:</p>
+                                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                    ${resultTabs.map(tabId => {
+                                        const tabName = tabNames[tabId] || tabId.replace('-content', '');
+                                        return `<button onclick="navigateToSearchResult('${tabId}')" 
+                                                style="background: #3b82f6; color: white; border: none; padding: 6px 12px; 
+                                                    border-radius: 4px; cursor: pointer; font-size: 0.8rem; 
+                                                    transition: background 0.2s;">
+                                                ${tabName}
+                                            </button>`;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    messageElement.innerHTML = `
+                        <p>Found <strong>${resultCount}</strong> result(s) for "<strong>${searchTerm}</strong>".</p>
+                        ${tabButtons}
+                        <p style="font-size: 0.9rem; margin-top: 8px; opacity: 0.8;">Click on any tab to clear search and return to normal navigation.</p>
+                    `;
                 messageElement.style.display = 'block';
-            } else if (foundResults && searchTerm !== '') {
-                if (!messageElement) {
-                    messageElement = document.createElement('div');
-                    messageElement.id = 'search-message';
-                    messageElement.className = 'search-message';
-                    messageElement.style.backgroundColor = '#f0f9ff';
-                    messageElement.style.borderColor = '#3b82f6';
-                    messageElement.style.color = '#1e40af';
-                    document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
-                }
+            } else if (messageElement) {
+                messageElement.style.display = 'none';
+            }
+        }
+            
+            // Function to navigate to a specific search result tab
+            function navigateToSearchResult(tabId) {
+                // Update current result index
+                currentResultIndex = searchResultTabs.indexOf(tabId);
                 
-                const resultCount = document.querySelectorAll('.search-result').length;
-                let tabButtons = '';
+                // Clear current highlights first
+                clearSearchHighlights();
                 
-                if (resultTabs.length > 1) {
-                    // Create tab names mapping
+                // Hide all tabs
+                const contentSections = document.querySelectorAll('.tab-content');
+                contentSections.forEach(section => {
+                    section.style.display = 'none';
+                    section.classList.remove('active');
+                });
+                
+                // Show the selected tab
+                const targetTab = document.getElementById(tabId);
+                if (targetTab) {
+                    targetTab.style.display = 'block';
+                    targetTab.classList.add('active');
+                    
+                    // Update navigation to show the correct active tab
+                    const navItems = document.querySelectorAll('.nav-item');
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    
+                    // Find the corresponding nav item
                     const tabNames = {
                         'overview-content': 'Overview',
                         'compensation-cess-content': 'Compensation Cess',
@@ -396,101 +526,38 @@
                         'faqs-content': 'FAQs'
                     };
                     
-                    tabButtons = `
-                        <div style="margin-top: 15px;">
-                            <p style="font-size: 0.9rem; margin-bottom: 10px; font-weight: bold;">Results found in:</p>
-                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                                ${resultTabs.map(tabId => {
-                                    const tabName = tabNames[tabId] || tabId.replace('-content', '');
-                                    return `<button onclick="navigateToSearchResult('${tabId}')" 
-                                            style="background: #3b82f6; color: white; border: none; padding: 6px 12px; 
-                                                   border-radius: 4px; cursor: pointer; font-size: 0.8rem; 
-                                                   transition: background 0.2s;">
-                                            ${tabName}
-                                        </button>`;
-                                }).join('')}
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                messageElement.innerHTML = `
-                    <p>Found <strong>${resultCount}</strong> result(s) for "<strong>${searchTerm}</strong>".</p>
-                    ${tabButtons}
-                    <p style="font-size: 0.9rem; margin-top: 8px; opacity: 0.8;">Click on any tab to clear search and return to normal navigation.</p>
-                `;
-                messageElement.style.display = 'block';
-            } else if (messageElement) {
-                messageElement.style.display = 'none';
-            }
-        }
-        
-        // Function to navigate to a specific search result tab
-        function navigateToSearchResult(tabId) {
-            // Update current result index
-            currentResultIndex = searchResultTabs.indexOf(tabId);
-            
-            // Clear current highlights first
-            clearSearchHighlights();
-            
-            // Hide all tabs
-            const contentSections = document.querySelectorAll('.tab-content');
-            contentSections.forEach(section => {
-                section.style.display = 'none';
-                section.classList.remove('active');
-            });
-            
-            // Show the selected tab
-            const targetTab = document.getElementById(tabId);
-            if (targetTab) {
-                targetTab.style.display = 'block';
-                targetTab.classList.add('active');
-                
-                // Update navigation to show the correct active tab
-                const navItems = document.querySelectorAll('.nav-item');
-                navItems.forEach(nav => nav.classList.remove('active'));
-                
-                // Find the corresponding nav item
-                const tabNames = {
-                    'overview-content': 'Overview',
-                    'compensation-cess-content': 'Compensation Cess',
-                    'intermediaries-content': 'Intermediaries',
-                    'refunds-content': 'Refunds',
-                    'rate-rationalisation-content': 'Rate Rationalisation',
-                    'registration-content': 'Registration',
-                    'supply-discounts-content': 'Supply & Discounts',
-                    'gstat-content': 'GSTAT',
-                    'anti-profiteering-content': 'Anti Profiteering',
-                    'challenges-content': 'Challenges',
-                    'time-of-supply-content': 'Time of Supply',
-                    'faqs-content': 'FAQs'
-                };
-                
-                const tabName = tabNames[tabId];
-                if (tabName) {
-                    const correspondingNav = Array.from(navItems).find(nav => 
-                        nav.textContent.trim() === tabName
-                    );
-                    if (correspondingNav) {
-                        correspondingNav.classList.add('active');
+                    const tabName = tabNames[tabId];
+                    if (tabName) {
+                        const correspondingNav = Array.from(navItems).find(nav => 
+                            nav.textContent.trim() === tabName
+                        );
+                        if (correspondingNav) {
+                            correspondingNav.classList.add('active');
+                        }
                     }
+                    
+                    // Re-highlight search terms in the new tab
+                    if (currentSearchTerm) {
+                        highlightSearchTerm(targetTab, currentSearchTerm);
+                    }
+                    
+                    // Scroll to top of the tab
+                    targetTab.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
                 }
-                
-                // Re-highlight search terms in the new tab
-                if (currentSearchTerm) {
-                    highlightSearchTerm(targetTab, currentSearchTerm);
-                }
-                
-                // Scroll to top of the tab
-                targetTab.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
             }
-        }
-        
+            
         // Make navigateToSearchResult globally available
         window.navigateToSearchResult = navigateToSearchResult;
+        
+        // Add a test function for debugging
+        window.testSearch = function(term) {
+            console.log('Testing search with term:', term);
+            searchBar.value = term;
+            performSearch(term);
+        };
         
         // Function to clear search highlights
         function clearSearchHighlights() {
@@ -581,152 +648,152 @@
                 .print-button {
                     display: none !important;
                 }
-                
-                /* Page setup */
-                @page {
-                    margin: 0.5in;
-                    size: A4;
-                }
-                
-                body {
-                    font-size: 12pt;
-                    line-height: 1.4;
-                    color: #000;
-                    background: white !important;
-                }
-                
-                /* Header styling */
+                    
+                    /* Page setup */
+                    @page {
+                        margin: 0.5in;
+                        size: A4;
+                    }
+                    
+                    body {
+                        font-size: 12pt;
+                        line-height: 1.4;
+                        color: #000;
+                        background: white !important;
+                    }
+                    
+                    /* Header styling */
                 .header {
                     background-color: #1e3a8a !important;
                     -webkit-print-color-adjust: exact;
                     color-adjust: exact;
-                    color: white !important;
-                    page-break-inside: avoid;
-                }
-                
-                .header-title {
-                    color: white !important;
-                    font-size: 18pt;
-                }
-                
-                .header-date {
-                    color: white !important;
-                    font-size: 10pt;
-                }
-                
-                /* Navigation styling */
+                        color: white !important;
+                        page-break-inside: avoid;
+                    }
+                    
+                    .header-title {
+                        color: white !important;
+                        font-size: 18pt;
+                    }
+                    
+                    .header-date {
+                        color: white !important;
+                        font-size: 10pt;
+                    }
+                    
+                    /* Navigation styling */
                 .navigation {
-                    background: #3b82f6 !important;
+                        background: #3b82f6 !important;
                     -webkit-print-color-adjust: exact;
                     color-adjust: exact;
-                    page-break-inside: avoid;
-                }
-                
-                .nav-item {
-                    color: white !important;
-                    background: transparent !important;
-                }
-                
-                .nav-item.active {
-                    background: rgba(255, 255, 255, 0.2) !important;
-                }
-                
-                /* Content styling */
+                        page-break-inside: avoid;
+                    }
+                    
+                    .nav-item {
+                        color: white !important;
+                        background: transparent !important;
+                    }
+                    
+                    .nav-item.active {
+                        background: rgba(255, 255, 255, 0.2) !important;
+                    }
+                    
+                    /* Content styling */
                 .content-container {
                     box-shadow: none !important;
                     border: 1px solid #ddd;
-                    page-break-inside: avoid;
-                }
-                
-                .content-title {
-                    color: #1e3a8a !important;
-                    font-size: 16pt;
-                    page-break-after: avoid;
-                }
-                
-                .section-title {
-                    color: #1e3a8a !important;
-                    font-size: 14pt;
-                    page-break-after: avoid;
-                }
-                
-                .section-subtitle {
-                    color: #1e3a8a !important;
-                    font-size: 12pt;
-                    page-break-after: avoid;
-                }
-                
-                /* Table styling */
-                .rate-table {
-                    border-collapse: collapse;
-                    width: 100%;
-                    font-size: 10pt;
-                    page-break-inside: auto;
-                }
-                
-                .rate-table thead {
-                    background-color: #1e3a8a !important;
-                    -webkit-print-color-adjust: exact;
-                    color-adjust: exact;
-                    color: white !important;
-                }
-                
-                .rate-table th,
-                .rate-table td {
-                    border: 1px solid #000;
-                    padding: 4pt;
-                    text-align: left;
-                }
-                
-                .rate-table tbody tr:nth-child(even) {
-                    background-color: #f9f9f9 !important;
-                    -webkit-print-color-adjust: exact;
-                    color-adjust: exact;
-                }
-                
-                /* Hide elements not needed in print */
-                .sub-nav-container {
-                    display: none !important;
-                }
-                
-                /* Show only active content */
-                .tab-content:not(.active),
-                .sub-tab-content:not(.active) {
-                    display: none !important;
-                }
-                
-                /* Lists and other elements */
-                .impact-list li {
-                    page-break-inside: avoid;
-                }
-                
-                .highlight-card {
-                    page-break-inside: avoid;
-                    border: 1px solid #ddd;
-                    background: #f9f9f9 !important;
-                    -webkit-print-color-adjust: exact;
-                    color-adjust: exact;
-                }
-                
-                .industry-category {
-                    page-break-inside: avoid;
-                    border: 1px solid #ddd;
-                    margin-bottom: 10pt;
-                }
-                
-                /* Timeline styling */
-                .timeline-item {
-                    page-break-inside: avoid;
-                    border: 1px solid #ddd;
-                    margin-bottom: 10pt;
-                }
-                
-                .timeline-date {
-                    background: #3b82f6 !important;
-                    -webkit-print-color-adjust: exact;
-                    color-adjust: exact;
-                    color: white !important;
-                }
+                        page-break-inside: avoid;
+                    }
+                    
+                    .content-title {
+                        color: #1e3a8a !important;
+                        font-size: 16pt;
+                        page-break-after: avoid;
+                    }
+                    
+                    .section-title {
+                        color: #1e3a8a !important;
+                        font-size: 14pt;
+                        page-break-after: avoid;
+                    }
+                    
+                    .section-subtitle {
+                        color: #1e3a8a !important;
+                        font-size: 12pt;
+                        page-break-after: avoid;
+                    }
+                    
+                    /* Table styling */
+                    .rate-table {
+                        border-collapse: collapse;
+                        width: 100%;
+                        font-size: 10pt;
+                        page-break-inside: auto;
+                    }
+                    
+                    .rate-table thead {
+                        background-color: #1e3a8a !important;
+                        -webkit-print-color-adjust: exact;
+                        color-adjust: exact;
+                        color: white !important;
+                    }
+                    
+                    .rate-table th,
+                    .rate-table td {
+                        border: 1px solid #000;
+                        padding: 4pt;
+                        text-align: left;
+                    }
+                    
+                    .rate-table tbody tr:nth-child(even) {
+                        background-color: #f9f9f9 !important;
+                        -webkit-print-color-adjust: exact;
+                        color-adjust: exact;
+                    }
+                    
+                    /* Hide elements not needed in print */
+                    .sub-nav-container {
+                        display: none !important;
+                    }
+                    
+                    /* Show only active content */
+                    .tab-content:not(.active),
+                    .sub-tab-content:not(.active) {
+                        display: none !important;
+                    }
+                    
+                    /* Lists and other elements */
+                    .impact-list li {
+                        page-break-inside: avoid;
+                    }
+                    
+                    .highlight-card {
+                        page-break-inside: avoid;
+                        border: 1px solid #ddd;
+                        background: #f9f9f9 !important;
+                        -webkit-print-color-adjust: exact;
+                        color-adjust: exact;
+                    }
+                    
+                    .industry-category {
+                        page-break-inside: avoid;
+                        border: 1px solid #ddd;
+                        margin-bottom: 10pt;
+                    }
+                    
+                    /* Timeline styling */
+                    .timeline-item {
+                        page-break-inside: avoid;
+                        border: 1px solid #ddd;
+                        margin-bottom: 10pt;
+                    }
+                    
+                    .timeline-date {
+                        background: #3b82f6 !important;
+                        -webkit-print-color-adjust: exact;
+                        color-adjust: exact;
+                        color: white !important;
+                    }
             }
         `;
         document.head.appendChild(printStyles);
