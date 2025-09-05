@@ -202,11 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             isSearchActive = true;
             
-            // Hide all content sections during search
-            const contentSections = document.querySelectorAll('.tab-content, .sub-tab-content');
-            contentSections.forEach(section => {
-                section.style.display = 'none';
-            });
+            // Don't hide content sections during search - keep them visible
             
             let foundResults = false;
             let firstResult = null;
@@ -241,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 if (titleMatch || contentMatch || sectionMatch) {
-                    // Don't show sections automatically - just mark them as search results
+                    // Mark sections as search results but keep them visible
                     section.classList.add('search-result');
                     foundResults = true;
                     
@@ -261,7 +257,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Highlight matching text
                     highlightSearchTerm(section, currentSearchTerm);
                 } else {
+                    // Remove search result class but keep section visible
                     section.classList.remove('search-result');
+                    // Clear highlights from this section only
+                    const highlights = section.querySelectorAll('.search-highlight');
+                    highlights.forEach(highlight => {
+                        const parent = highlight.parentNode;
+                        parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+                        parent.normalize();
+                    });
                 }
             });
             
@@ -418,18 +422,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     messageElement = document.createElement('div');
                     messageElement.id = 'search-message';
                     messageElement.className = 'search-message';
-                    messageElement.style.backgroundColor = '#fef3c7';
-                    messageElement.style.borderColor = '#f59e0b';
-                    messageElement.style.color = '#92400e';
-                    messageElement.style.border = '2px solid #f59e0b';
-                    messageElement.style.borderRadius = '8px';
-                    messageElement.style.padding = '16px';
-                    messageElement.style.margin = '16px 0';
-                    messageElement.style.boxShadow = '0 2px 4px rgba(245, 158, 11, 0.1)';
+                    messageElement.style.backgroundColor = '#f0fdf4';
+                    messageElement.style.borderColor = '#22c55e';
+                    messageElement.style.color = '#166534';
+                    messageElement.style.border = '1px solid #22c55e';
+                    messageElement.style.borderRadius = '6px';
+                    messageElement.style.padding = '12px';
+                    messageElement.style.margin = '8px 0';
+                    messageElement.style.boxShadow = '0 1px 3px rgba(34, 197, 94, 0.1)';
                     document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
                 }
                 messageElement.innerHTML = `
-                    <p>No results found for "<strong style="color: #92400e;">${searchTerm}</strong>".</p>
+                    <p>No results found for "<strong style="color: #166534;">${searchTerm}</strong>".</p>
                     <p style="margin-top: 12px; font-weight: 500;">Try searching for:</p>
                     <ul style="text-align: left; margin: 10px 0; padding-left: 20px;">
                         <li>Industry names (e.g., "Food", "Textile", "Health")</li>
