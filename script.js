@@ -292,8 +292,10 @@ document.addEventListener('DOMContentLoaded', function() {
             searchResultTabs = filteredResultTabs;
             currentResultIndex = 0;
             
-            // Show message if no results found
-            showSearchResults(foundResults, currentSearchTerm, filteredResultTabs);
+            // Wait a moment for highlighting to complete, then show results
+            setTimeout(() => {
+                showSearchResults(foundResults, currentSearchTerm, filteredResultTabs);
+            }, 100);
             
             console.log('Search results:', { foundResults, resultTabs, firstResult: firstResult?.id, foundSubTabs });
             
@@ -478,8 +480,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.querySelector('.content-container').insertBefore(messageElement, document.querySelector('.content-container').firstChild);
                 }
                 
-                const resultCount = document.querySelectorAll('.search-result').length;
-                const uniqueTabCount = resultTabs.length;
+                // Count the actual highlighted matches instead of just sections
+                const highlightedMatches = document.querySelectorAll('.search-highlight');
+                const resultCount = highlightedMatches.length;
                 let tabButtons = '';
                 
                 if (resultTabs.length > 0) {
@@ -546,7 +549,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 messageElement.innerHTML = `
-                    <p style="margin: 0 0 8px 0;">Found <strong style="color: #059669;">${resultCount}</strong> match(es) for "<strong style="color: #1e40af;">${searchTerm}</strong>" in <strong style="color: #059669;">${uniqueTabCount}</strong> section(s):</p>
+                    <p style="margin: 0 0 8px 0;">Found <strong style="color: #059669;">${resultCount}</strong> match(es) for "<strong style="color: #1e40af;">${searchTerm}</strong>":</p>
                     ${tabButtons}
                     <p style="font-size: 0.8rem; margin: 8px 0 0 0; color: #6b7280;">
                         <span style="color: #22c55e;">●</span> Main tabs | 
