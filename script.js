@@ -202,7 +202,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             isSearchActive = true;
             
-            // Don't hide content sections during search - keep them visible
+            // Get all content sections to search through
+            const contentSections = document.querySelectorAll('.tab-content, .sub-tab-content');
+            console.log('Searching through', contentSections.length, 'content sections');
             
             let foundResults = false;
             let firstResult = null;
@@ -215,13 +217,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 const sectionTitles = section.querySelectorAll('.section-title');
                 const sectionSubtitles = section.querySelectorAll('.section-subtitle');
                 
-                // Create a regex for word boundary matching
+                // Create a regex for flexible matching (not just word boundaries)
                 const escapedTerm = currentSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const searchRegex = new RegExp(`\\b${escapedTerm}\\b`, 'i');
+                const searchRegex = new RegExp(escapedTerm, 'i');
                 
                 // Check if search term matches title, section titles, or content
                 const titleMatch = searchRegex.test(sectionTitle);
                 const contentMatch = searchRegex.test(sectionText);
+                
+                // Debug logging
+                if (contentMatch) {
+                    console.log('Found match in section:', section.id, 'Title:', sectionTitle);
+                }
                 
                 // Check section titles and subtitles
                 let sectionMatch = false;
@@ -388,9 +395,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const parent = textNode.parentNode;
                 if (parent.tagName !== 'SCRIPT' && parent.tagName !== 'STYLE' && parent.tagName !== 'MARK') {
                     const text = textNode.textContent;
-                    // Escape special regex characters and create a proper word boundary regex
+                    // Escape special regex characters and create a flexible regex
                     const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    const regex = new RegExp(`\\b(${escapedTerm})\\b`, 'gi');
+                    const regex = new RegExp(`(${escapedTerm})`, 'gi');
                     const highlightedText = text.replace(regex, '<mark class="search-highlight" id="search-match">$1</mark>');
                     
                     if (highlightedText !== text) {
