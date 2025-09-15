@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let isSearchActive = false;
     let currentSearchTerm = '';
     let currentResultIndex = 0;
+    let currentHighlightIndex = 0;
     let searchResultTabs = [];
     
     // Navigation functionality
@@ -291,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Store result tabs for keyboard navigation
             searchResultTabs = filteredResultTabs;
             currentResultIndex = 0;
+            currentHighlightIndex = 0;
             
             // Wait a moment for highlighting to complete, then show results
             setTimeout(() => {
@@ -347,6 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (searchResultTabs.length > 1) {
                         // Multiple tabs - cycle through tabs
                         currentResultIndex = (currentResultIndex + 1) % searchResultTabs.length;
+                        currentHighlightIndex = 0; // Reset highlight index when switching tabs
                         navigateToSearchResult(searchResultTabs[currentResultIndex]);
                     } else if (searchResultTabs.length === 1) {
                         // Single tab - cycle through highlights within that tab
@@ -354,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (currentTab) {
                             const highlights = currentTab.querySelectorAll('.search-highlight');
                             if (highlights.length > 1) {
-                                currentResultIndex = (currentResultIndex + 1) % highlights.length;
+                                currentHighlightIndex = (currentHighlightIndex + 1) % highlights.length;
                                 scrollToHighlightedTerm(currentTab, currentSearchTerm);
                             } else {
                                 navigateToSearchResult(searchResultTabs[0]);
@@ -383,6 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // If we have multiple tabs, cycle through tabs
                     if (searchResultTabs.length > 1) {
                         currentResultIndex = (currentResultIndex + 1) % searchResultTabs.length;
+                        currentHighlightIndex = 0; // Reset highlight index when switching tabs
                         navigateToSearchResult(searchResultTabs[currentResultIndex]);
                     } else if (searchResultTabs.length === 1) {
                         // If only one tab, cycle through highlights within that tab
@@ -390,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (currentTab) {
                             const highlights = currentTab.querySelectorAll('.search-highlight');
                             if (highlights.length > 1) {
-                                currentResultIndex = (currentResultIndex + 1) % highlights.length;
+                                currentHighlightIndex = (currentHighlightIndex + 1) % highlights.length;
                                 scrollToHighlightedTerm(currentTab, currentSearchTerm);
                             }
                         }
@@ -400,6 +404,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // If we have multiple tabs, cycle through tabs
                     if (searchResultTabs.length > 1) {
                         currentResultIndex = currentResultIndex === 0 ? searchResultTabs.length - 1 : currentResultIndex - 1;
+                        currentHighlightIndex = 0; // Reset highlight index when switching tabs
                         navigateToSearchResult(searchResultTabs[currentResultIndex]);
                     } else if (searchResultTabs.length === 1) {
                         // If only one tab, cycle through highlights within that tab
@@ -407,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (currentTab) {
                             const highlights = currentTab.querySelectorAll('.search-highlight');
                             if (highlights.length > 1) {
-                                currentResultIndex = currentResultIndex === 0 ? highlights.length - 1 : currentResultIndex - 1;
+                                currentHighlightIndex = currentHighlightIndex === 0 ? highlights.length - 1 : currentHighlightIndex - 1;
                                 scrollToHighlightedTerm(currentTab, currentSearchTerm);
                             }
                         }
@@ -597,11 +602,18 @@ document.addEventListener('DOMContentLoaded', function() {
         function scrollToHighlightedTerm(element, searchTerm) {
             const highlights = element.querySelectorAll('.search-highlight');
             if (highlights.length > 0) {
-                // Find the next highlight to scroll to
-                const currentIndex = currentResultIndex % highlights.length;
-                const targetHighlight = highlights[currentIndex];
+                // Remove active class from all highlights
+                highlights.forEach(highlight => {
+                    highlight.classList.remove('search-highlight-active');
+                });
+                
+                // Use the highlight index for cycling through highlights within a tab
+                const targetHighlight = highlights[currentHighlightIndex];
                 
                 if (targetHighlight) {
+                    // Add active class to current highlight
+                    targetHighlight.classList.add('search-highlight-active');
+                    
                     requestAnimationFrame(() => {
                         targetHighlight.scrollIntoView({ 
                             behavior: 'smooth', 
