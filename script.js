@@ -463,9 +463,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const resultCount = document.querySelectorAll('.search-result').length;
                 let tabButtons = '';
                 
-                if (resultTabs.length > 1) {
-                    // Create tab names mapping
+                if (resultTabs.length > 0) {
+                    // Create comprehensive tab names mapping including sub-tabs
                     const tabNames = {
+                        // Main tabs
                         'overview-content': 'Overview',
                         'compensation-cess-content': 'Compensation Cess',
                         'intermediaries-content': 'Intermediaries',
@@ -477,7 +478,25 @@ document.addEventListener('DOMContentLoaded', function() {
                         'anti-profiteering-content': 'Anti Profiteering',
                         'challenges-content': 'Challenges',
                         'time-of-supply-content': 'Time of Supply',
-                        'faqs-content': 'FAQs'
+                        'faqs-content': 'FAQs',
+                        // Sub-tabs under Rate Rationalisation
+                        'food-content': 'Rate Rationalisation > Food',
+                        'agriculture-content': 'Rate Rationalisation > Agriculture',
+                        'textile-content': 'Rate Rationalisation > Textile & Footwear',
+                        'health-content': 'Rate Rationalisation > Health',
+                        'sin-luxury-content': 'Rate Rationalisation > Sin & Luxury',
+                        'motor-vehicles-content': 'Rate Rationalisation > Motor Vehicles',
+                        'energy-content': 'Rate Rationalisation > Energy',
+                        'stationery-content': 'Rate Rationalisation > Stationery',
+                        'paper-wood-content': 'Rate Rationalisation > Paper & Wood',
+                        'defence-content': 'Rate Rationalisation > Defence',
+                        'construction-content': 'Rate Rationalisation > Construction',
+                        'transportation-content': 'Rate Rationalisation > Handicrafts & Lifestyle',
+                        'job-work-content': 'Rate Rationalisation > Job Work',
+                        'hospitality-content': 'Rate Rationalisation > Hospitality & Wellness',
+                        'insurance-content': 'Rate Rationalisation > Insurance',
+                        'handicrafts-lifestyle-content': 'Rate Rationalisation > Transportation',
+                        'others-content': 'Rate Rationalisation > Others'
                     };
                     
                     tabButtons = `
@@ -485,13 +504,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                                 ${resultTabs.map(tabId => {
                                     const tabName = tabNames[tabId] || tabId.replace('-content', '');
+                                    const isSubTab = tabId.includes('-content') && tabId !== 'rate-rationalisation-content' && 
+                                        ['food-content', 'agriculture-content', 'textile-content', 'health-content', 'sin-luxury-content', 
+                                         'motor-vehicles-content', 'energy-content', 'stationery-content', 'paper-wood-content', 
+                                         'defence-content', 'construction-content', 'transportation-content', 'job-work-content', 
+                                         'hospitality-content', 'insurance-content', 'handicrafts-lifestyle-content', 'others-content'].includes(tabId);
+                                    
                                     return `<button onclick="navigateToSearchResult('${tabId}')" 
-                                            style="background: #22c55e; color: white; border: none; padding: 6px 12px; 
+                                            style="background: ${isSubTab ? '#3b82f6' : '#22c55e'}; color: white; border: none; padding: 6px 12px; 
                                                    border-radius: 4px; cursor: pointer; font-size: 0.8rem; 
                                                    transition: all 0.2s; margin: 1px; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-                                                   font-weight: 500;"
-                                            onmouseover="this.style.background='#16a34a'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)'"
-                                            onmouseout="this.style.background='#22c55e'; this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 2px rgba(0,0,0,0.1)'">
+                                                   font-weight: 500; position: relative;"
+                                            onmouseover="this.style.background='${isSubTab ? '#2563eb' : '#16a34a'}'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)'"
+                                            onmouseout="this.style.background='${isSubTab ? '#3b82f6' : '#22c55e'}'; this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 2px rgba(0,0,0,0.1)'"
+                                            title="${tabName}">
                                             ${tabName}
                                         </button>`;
                                 }).join('')}
@@ -501,9 +527,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 messageElement.innerHTML = `
-                    <p style="margin: 0 0 8px 0;">Found <strong style="color: #059669;">${resultCount}</strong> result(s) for "<strong style="color: #1e40af;">${searchTerm}</strong>"</p>
+                    <p style="margin: 0 0 8px 0;">Found <strong style="color: #059669;">${resultCount}</strong> result(s) for "<strong style="color: #1e40af;">${searchTerm}</strong>" in the following sections:</p>
                     ${tabButtons}
-                    <p style="font-size: 0.8rem; margin: 8px 0 0 0; color: #6b7280;">Press <kbd style="background: #f3f4f6; padding: 1px 4px; border-radius: 3px; font-size: 0.75rem;">Enter</kbd> to cycle through results</p>
+                    <p style="font-size: 0.8rem; margin: 8px 0 0 0; color: #6b7280;">
+                        <span style="color: #22c55e;">●</span> Main tabs | 
+                        <span style="color: #3b82f6;">●</span> Sub-tabs | 
+                        Press <kbd style="background: #f3f4f6; padding: 1px 4px; border-radius: 3px; font-size: 0.75rem;">Enter</kbd> to cycle through results
+                    </p>
                 `;
                 messageElement.style.display = 'block';
             } else if (messageElement) {
