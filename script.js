@@ -341,18 +341,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Clear any pending search timeout
                 clearTimeout(this.searchTimeout);
                 
-                // If we're already in search mode and have multiple unique tabs, cycle through them
-                if (isSearchActive && searchResultTabs.length > 1) {
+                // If we're already in search mode, cycle through results
+                if (isSearchActive) {
                     e.preventDefault();
-                    currentResultIndex = (currentResultIndex + 1) % searchResultTabs.length;
-                    navigateToSearchResult(searchResultTabs[currentResultIndex]);
-                    return;
-                }
-                
-                // If we have only one result, just navigate to it
-                if (isSearchActive && searchResultTabs.length === 1) {
-                    e.preventDefault();
-                    navigateToSearchResult(searchResultTabs[0]);
+                    if (searchResultTabs.length > 1) {
+                        // Multiple tabs - cycle through tabs
+                        currentResultIndex = (currentResultIndex + 1) % searchResultTabs.length;
+                        navigateToSearchResult(searchResultTabs[currentResultIndex]);
+                    } else if (searchResultTabs.length === 1) {
+                        // Single tab - cycle through highlights within that tab
+                        const currentTab = document.getElementById(searchResultTabs[0]);
+                        if (currentTab) {
+                            const highlights = currentTab.querySelectorAll('.search-highlight');
+                            if (highlights.length > 1) {
+                                currentResultIndex = (currentResultIndex + 1) % highlights.length;
+                                scrollToHighlightedTerm(currentTab, currentSearchTerm);
+                            } else {
+                                navigateToSearchResult(searchResultTabs[0]);
+                            }
+                        }
+                    }
                     return;
                 }
                 
@@ -369,21 +377,41 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add keyboard navigation for search results
         searchBar.addEventListener('keydown', function(e) {
-            if (isSearchActive && searchResultTabs.length > 1) {
+            if (isSearchActive) {
                 if (e.key === 'ArrowRight' || e.key === 'Tab') {
                     e.preventDefault();
-                    currentResultIndex = (currentResultIndex + 1) % searchResultTabs.length;
-                    navigateToSearchResult(searchResultTabs[currentResultIndex]);
+                    // If we have multiple tabs, cycle through tabs
+                    if (searchResultTabs.length > 1) {
+                        currentResultIndex = (currentResultIndex + 1) % searchResultTabs.length;
+                        navigateToSearchResult(searchResultTabs[currentResultIndex]);
+                    } else if (searchResultTabs.length === 1) {
+                        // If only one tab, cycle through highlights within that tab
+                        const currentTab = document.getElementById(searchResultTabs[0]);
+                        if (currentTab) {
+                            const highlights = currentTab.querySelectorAll('.search-highlight');
+                            if (highlights.length > 1) {
+                                currentResultIndex = (currentResultIndex + 1) % highlights.length;
+                                scrollToHighlightedTerm(currentTab, currentSearchTerm);
+                            }
+                        }
+                    }
                 } else if (e.key === 'ArrowLeft') {
                     e.preventDefault();
-                    currentResultIndex = currentResultIndex === 0 ? searchResultTabs.length - 1 : currentResultIndex - 1;
-                    navigateToSearchResult(searchResultTabs[currentResultIndex]);
-                }
-            } else if (isSearchActive && searchResultTabs.length === 1) {
-                // If only one unique result, just navigate to it
-                if (e.key === 'ArrowRight' || e.key === 'Tab' || e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    navigateToSearchResult(searchResultTabs[0]);
+                    // If we have multiple tabs, cycle through tabs
+                    if (searchResultTabs.length > 1) {
+                        currentResultIndex = currentResultIndex === 0 ? searchResultTabs.length - 1 : currentResultIndex - 1;
+                        navigateToSearchResult(searchResultTabs[currentResultIndex]);
+                    } else if (searchResultTabs.length === 1) {
+                        // If only one tab, cycle through highlights within that tab
+                        const currentTab = document.getElementById(searchResultTabs[0]);
+                        if (currentTab) {
+                            const highlights = currentTab.querySelectorAll('.search-highlight');
+                            if (highlights.length > 1) {
+                                currentResultIndex = currentResultIndex === 0 ? highlights.length - 1 : currentResultIndex - 1;
+                                scrollToHighlightedTerm(currentTab, currentSearchTerm);
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -421,15 +449,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Scroll to the first highlighted term
+            // Scroll to the first highlighted term with better timing
             const firstHighlight = element.querySelector('.search-highlight');
             if (firstHighlight) {
-                setTimeout(() => {
+                // Use requestAnimationFrame for smoother scrolling
+                requestAnimationFrame(() => {
                     firstHighlight.scrollIntoView({ 
                         behavior: 'smooth', 
-                        block: 'center' 
+                        block: 'center',
+                        inline: 'nearest'
                     });
-                }, 300);
+                });
             }
         }
         
@@ -549,7 +579,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 messageElement.innerHTML = `
-                    <p style="margin: 0 0 8px 0;">Found <strong style="color: #059669;">${resultCount}</strong> match(es) for "<strong style="color: #1e40af;">${searchTerm}</strong>":</p>
+                    <p style="margin: 0 0 8px 0;">Found "<strong style="color: #1e40af;">${searchTerm}</strong>" in following tabs:</p>
                     ${tabButtons}
                     <p style="font-size: 0.8rem; margin: 8px 0 0 0; color: #6b7280;">
                         <span style="color: #22c55e;">●</span> Main tabs | 
@@ -560,6 +590,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageElement.style.display = 'block';
             } else if (messageElement) {
                 messageElement.style.display = 'none';
+            }
+        }
+        
+        // Function to scroll to a specific highlighted term
+        function scrollToHighlightedTerm(element, searchTerm) {
+            const highlights = element.querySelectorAll('.search-highlight');
+            if (highlights.length > 0) {
+                // Find the next highlight to scroll to
+                const currentIndex = currentResultIndex % highlights.length;
+                const targetHighlight = highlights[currentIndex];
+                
+                if (targetHighlight) {
+                    requestAnimationFrame(() => {
+                        targetHighlight.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center',
+                            inline: 'nearest'
+                        });
+                    });
+                }
             }
         }
         
@@ -667,13 +717,21 @@ document.addEventListener('DOMContentLoaded', function() {
             // Re-highlight search terms in the new tab
             if (currentSearchTerm) {
                 highlightSearchTerm(targetTab, currentSearchTerm);
+                
+                // Scroll to the first highlighted term in this tab
+                setTimeout(() => {
+                    scrollToHighlightedTerm(targetTab, currentSearchTerm);
+                }, 100);
+            } else {
+                // If no search term, just scroll to top of tab
+                requestAnimationFrame(() => {
+                    targetTab.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start',
+                        inline: 'nearest'
+                    });
+                });
             }
-            
-            // Scroll to top of the tab
-            targetTab.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
-            });
         }
         
         // Make navigateToSearchResult globally available
