@@ -204,7 +204,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Get all content sections to search through
             const contentSections = document.querySelectorAll('.tab-content, .sub-tab-content');
-            console.log('Searching through', contentSections.length, 'content sections');
             
             let foundResults = false;
             let firstResult = null;
@@ -224,11 +223,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Check if search term matches title, section titles, or content
                 const titleMatch = searchRegex.test(sectionTitle);
                 const contentMatch = searchRegex.test(sectionText);
-                
-                // Debug logging
-                if (contentMatch) {
-                    console.log('Found match in section:', section.id, 'Title:', sectionTitle);
-                }
                 
                 // Check section titles and subtitles
                 let sectionMatch = false;
@@ -253,12 +247,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         firstResult = section;
                     }
                     
-                    // Track which tabs have results
-                    resultTabs.push(section.id);
+                    // Track which tabs have results (only add if not already present)
+                    if (!resultTabs.includes(section.id)) {
+                        resultTabs.push(section.id);
+                    }
                     
                     // If this is a sub-tab, also track the parent tab
                     if (section.classList.contains('sub-tab-content')) {
-                        foundSubTabs.push(section.id);
+                        if (!foundSubTabs.includes(section.id)) {
+                            foundSubTabs.push(section.id);
+                        }
                     }
                     
                     // Highlight matching text
@@ -341,11 +339,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Clear any pending search timeout
                 clearTimeout(this.searchTimeout);
                 
-                // If we're already in search mode and have multiple results, cycle through them
+                // If we're already in search mode and have multiple unique tabs, cycle through them
                 if (isSearchActive && searchResultTabs.length > 1) {
                     e.preventDefault();
                     currentResultIndex = (currentResultIndex + 1) % searchResultTabs.length;
                     navigateToSearchResult(searchResultTabs[currentResultIndex]);
+                    return;
+                }
+                
+                // If we have only one result, just navigate to it
+                if (isSearchActive && searchResultTabs.length === 1) {
+                    e.preventDefault();
+                    navigateToSearchResult(searchResultTabs[0]);
                     return;
                 }
                 
@@ -371,6 +376,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.preventDefault();
                     currentResultIndex = currentResultIndex === 0 ? searchResultTabs.length - 1 : currentResultIndex - 1;
                     navigateToSearchResult(searchResultTabs[currentResultIndex]);
+                }
+            } else if (isSearchActive && searchResultTabs.length === 1) {
+                // If only one unique result, just navigate to it
+                if (e.key === 'ArrowRight' || e.key === 'Tab' || e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    navigateToSearchResult(searchResultTabs[0]);
                 }
             }
         });
@@ -468,6 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 const resultCount = document.querySelectorAll('.search-result').length;
+                const uniqueTabCount = resultTabs.length;
                 let tabButtons = '';
                 
                 if (resultTabs.length > 0) {
@@ -534,12 +546,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 messageElement.innerHTML = `
-                    <p style="margin: 0 0 8px 0;">Found <strong style="color: #059669;">${resultCount}</strong> result(s) for "<strong style="color: #1e40af;">${searchTerm}</strong>" in the following sections:</p>
+                    <p style="margin: 0 0 8px 0;">Found <strong style="color: #059669;">${resultCount}</strong> match(es) for "<strong style="color: #1e40af;">${searchTerm}</strong>" in <strong style="color: #059669;">${uniqueTabCount}</strong> section(s):</p>
                     ${tabButtons}
                     <p style="font-size: 0.8rem; margin: 8px 0 0 0; color: #6b7280;">
                         <span style="color: #22c55e;">●</span> Main tabs | 
                         <span style="color: #3b82f6;">●</span> Sub-tabs | 
-                        Press <kbd style="background: #f3f4f6; padding: 1px 4px; border-radius: 3px; font-size: 0.75rem;">Enter</kbd> to cycle through results
+                        Press <kbd style="background: #f3f4f6; padding: 1px 4px; border-radius: 3px; font-size: 0.75rem;">Enter</kbd> to cycle through sections
                     </p>
                 `;
                 messageElement.style.display = 'block';
